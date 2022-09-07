@@ -15,6 +15,10 @@ tmp_LA = nwbRead('MW9_Session_6_filter.nwb');
 mi_timestamps = tmp_LA.processing.get('ecephys').nwbdatainterface.get...
     ('LFP').electricalseries.get('MicroWireSeries').timestamps.load;
 
+%%
+
+eventStamps = tmp_LA.acquisition.get('events').timestamps.load
+
 
 %% spike timestamps
 
