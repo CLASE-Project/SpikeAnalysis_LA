@@ -34,18 +34,17 @@ load("A257_sorted_new.mat")
 % timestamps = newTimeStampsNegative % time vector in NLX clock =
 %              length(assignedNegative)
 %
-% spkTimes_cl1 =
-% timestamps(ismember(all_spike_clusters,clustsOFinterest(1)));
+% spkTimes_cl1 = tismember(all_spike_clusters,clustsOFinterest(1))
 
 
 
 %% Behavioral event ids
 
-behLOC = '\LossAversion\Patient folders\CLASE006\Behavioral-data\EventBehavior';
+behLOC = '\LossAversion\Patient folders\CLASE006\Behavioral-data';
 
-cd([userLOC , behLOC])
+cd([userLOC , spkLOC])
 
-%load("clase006_BehEvTable.mat","eventTABLE");
+%load("clase_behavior_CLASE006_738632.4781.mat","subjdata");
 
-
+%behaviorDATA = subjdata.cs;
 
