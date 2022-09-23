@@ -76,7 +76,7 @@ switch ttlStyle
 
             if sum(posTTLinds) < 675
 
-                posTTLinds = contains(eventIDcs,'send_TTL') | ~contains(eventIDcs,'0x000');
+                posTTLinds = contains(eventIDcs,'send_TTL') & ~contains(eventIDcs,'0x000');
 
             end
         end
