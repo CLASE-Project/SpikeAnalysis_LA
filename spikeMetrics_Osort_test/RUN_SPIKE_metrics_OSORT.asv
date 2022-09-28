@@ -13,7 +13,6 @@ colors = [211, 169, 147 ;
    122, 118, 130
    134, 130, 141];
 
-
 rawWaveforms = newSpikesNegative;
 assignedClusterNegative = assignedNegative;
 rawWaveforms = rawWaveforms .* scalingFactor*1e6; %convert to uV
@@ -32,8 +31,8 @@ spikeColor = 'r';
 
 
 cluNr=clusters(1); % Cluster ID
-spikesToDraw = allSpikes( assignedClusterNegative==cluNr,:);
-timestamps = allTimestamps( assignedClusterNegative==cluNr);
+spikesToDraw = allSpikes( find(assignedClusterNegative==cluNr),:);
+timestamps = allTimestamps( find(assignedClusterNegative==cluNr) );
 
 [L_R,~,Isoldist]=computeLratio( allSpikes ,assignedClusterNegative,cluNr,2); 
 
@@ -100,7 +99,6 @@ hold on
 plot(edges1, yGam1, 'r','linewidth',2);
 
 % Figure 7
-figure;
 % Waveform amplitude at alignment
 hist(spikesToDraw(:,95),50)
 title('Waveform amp at alignment')
@@ -110,7 +108,7 @@ ylabel('nr of spikes');
 
 
 
-% plot of firing rate and spike amplitude across time
+%% plot of firing rate and spike amplitude across time
 %only taking into accout time form first and last detected spike ?
 
 
@@ -121,8 +119,9 @@ for i=1:100
   H(i)= length(find(timestamps>allTimestamps(1)+1+l*(i-1) ...
       & timestamps<allTimestamps(1)+l*(i)));
    % amp
-  H1(i)= mean(spikesToDraw(timestamps>allTimestamps(1)+1+l*(i-1) ...
-      & timestamps<allTimestamps(1)+l*(i),95));
+  H1(i)= mean(spikesToDraw(find(timestamps>allTimestamps(1)+1+l*(i-1) ...
+      & timestamps<allTimestamps(1)+l*(i)),95));
+  
 end
 
 H=H/(l/1000000);
@@ -151,9 +150,9 @@ figure;
 [ax h1 h2]=plotyy(linspace(allTimestamps(1),allTimestamps(end),100)/1000000-allTimestamps(1)/1e6,H1,...
     linspace(allTimestamps(1),allTimestamps(end),100)/1000000-allTimestamps(1)/1e6,H);
 try
-    ylim([min(H1) max(H1)]);
+ylim([min(H1) max(H1)]);
 catch
-    ylim([min(H1)-1 max(H1)]);
+ ylim([min(H1)-1 max(H1)]);   
 end
 
 set(h1,'LineW',2,'LineStyle','--');
@@ -166,12 +165,12 @@ xlabel('time (sec)');
 title('spike rate & amplitude during analyzed period');
 
 
-% Figure 9 and 10
+% Figure 8
 figure;
-plotSortingResultRaw_LA(rawWaveforms, [], assignedClusterNegative, [], clusters, [], [], colors )
+plotSortingResultRaw(rawWaveforms, [], assignedClusterNegative, [], clusters, [], [], colors )
 
 
-% Figure 11
+
 
 [pc,score,latent,tsquare] = pca(rawWaveforms);
 
@@ -189,7 +188,7 @@ noiseInds=setdiff(1:length(assigned),allInds);
 plot( score(noiseInds,1), score(noiseInds,2), '.', 'color', [0.5 0.5 0.5]);
 hold on
 for i=1:nrClusters
-    plot( score(plotInds{i},1), score(plotInds{i},2), [colors(i,:)/255 '.']);
+    plot( score(plotInds{i},1), score(plotInds{i},2), [colors{i} '.']);
 end
 hold off
 

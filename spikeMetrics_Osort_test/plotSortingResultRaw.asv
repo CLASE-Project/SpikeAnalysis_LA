@@ -54,7 +54,7 @@ for k=1:2
         m = mean ( allSpikes( find(assigned==cluNr),:));
         
         color=colors(i,:);
-        plot(1:nrDataPoints, m, 'Color',color/255,'linewidth',2);
+        plot(1:nrDataPoints, m, 'Color',color,'linewidth',2);
 	end
     hold off
 	xlim( [1 nrDataPoints] );
@@ -72,9 +72,9 @@ for k=1:2
         color=colors(i,:);
         if size(spikesToDraw,1)>500 
 	        %dont plot every spike,to save space
-		plot(1:nrDataPoints, spikesToDraw(1:10:end,:)', 'Color',color/255);
+		plot(1:nrDataPoints, spikesToDraw(1:10:end,:)', 'Color',color);
 	else
-	        plot(1:nrDataPoints, spikesToDraw', 'Color',color/255);
+	        plot(1:nrDataPoints, spikesToDraw', 'Color',color);
 	end
         end
     hold off
@@ -96,7 +96,7 @@ for k=1:2
         m = mean ( allSpikes( find(assigned==cluNr),:));
         
         color=colors(i,:);
-        plot(1:nrDataPoints, m, 'Color', color/255,'linewidth',2);
+        plot(1:nrDataPoints, m, 'Color', color,'linewidth',2);
 	end
     hold off
 	xlim( [1 nrDataPoints] );
