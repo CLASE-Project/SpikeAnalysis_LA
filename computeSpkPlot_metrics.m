@@ -49,7 +49,7 @@ function [] = computeSpkPlot_metrics(inputARgs)
         ISI_fitWindows = [200 700];
 
         [~,~,tvect,Cxx,edges1,n1,yGam1,...
-            ~,~,~,~,~,~,percentageBelow,CV]  =...
+            ~,~,~,~,m1,~,percentageBelow,CV]  =...
             getStatsForCluster(spikesToDraw, timestamps, ISI_fitWindows);
 
         allcluststr.(['C',num2str(cli)]).ID = cluNr;
@@ -135,6 +135,7 @@ function [] = computeSpkPlot_metrics(inputARgs)
         allcluststr.(['C',num2str(cli)]).F3.Cxx = Cxx;
         % Figure 4
         allcluststr.(['C',num2str(cli)]).F4.edges1 = edges1;
+        allcluststr.(['C',num2str(cli)]).F4.m1 = m1;
         allcluststr.(['C',num2str(cli)]).F4.n1 = n1;
         allcluststr.(['C',num2str(cli)]).F4.percbelow = percentageBelow;
         allcluststr.(['C',num2str(cli)]).F4.CV = CV;
