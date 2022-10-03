@@ -1,7 +1,7 @@
 
 
-flU = 'Z:\LossAversion\Patient folders\CLASE001\NWB-data\Spiking_Data\sort\5';
-
+flU = 'F:\01_Coding_Datasets\LossAversionPipeTest\CLASE006\NWB-data\Spike_Data\sort\5';
+cd(flU)
 matDIR1 = dir('*.mat');
 matDIR2 = {matDIR1.name};
 
