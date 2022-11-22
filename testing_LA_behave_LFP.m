@@ -1,10 +1,15 @@
-subID = 'clase001';
-nwbDi = 'Z:\LossAversion\Patient folders\CLASE008\NWB-data\NWB_Data';
-nwbN = 'CLASE08_Session_2_filter.nwb';
-behD = 'Z:\LossAversion\Patient folders\CLASE008\Behavioral-Data\EventBehavior';
+subID = 'clase006';
+nwbDi = 'F:\Patient folders\CLASE006\NWB-data\NWB_Data';
+nwbN = 'MW12_Session_3_filter.nwb';
+behD = 'F:\Patient folders\CLASE006\Behavioral-data\EventBehavior';
 ttlS = 1;
 
-processLA_behav( subID , ttlS  , nwbDi, nwbN , behD)
+% processLA_behav( subID , ttlS  , nwbDi, nwbN , behD)
+
+
+processLA_behav_v2( subID , ttlS  , nwbDi, nwbN , behD)
+
+%%% FIX CLASE006 and CLASE007 
 
 %%
 
