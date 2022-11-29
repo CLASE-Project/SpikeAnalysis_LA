@@ -64,77 +64,71 @@ eventIDcs = cellstr(eventSids);
 % TRIALS = 675
 % TOTAL = 675;
 
-% CHECK 1: Check for all TTL events
-hexFlagsTTL = eventIDcs(contains(eventIDcs,'TTL Input'));
-hexOnly = extractBetween(hexFlagsTTL,'(',')');
-decFhex = hex2dec(hexOnly);
-decFhex2 = decFhex(decFhex ~= 0);
-
-tempTab = tabulate(categorical(decFhex2));
-if height(tempTab) < 5
-    ckTT1 = false;
-else
-    ckTT1 = true;
-end
-
-% CHECK 2: Check for 5 blocks
-[~,peakLOCS,~] = findpeaks(diff(eventStamps),'MinPeakDistance',100,'MinPeakHeight',11000000);
-
-blockINDst = zeros(4,2);
-
-for bi = 1:5
-    if bi == 1
-        blockINDst(bi,1) = 1;
-        blockINDst(bi,2) = peakLOCS(bi);
-    elseif bi == 5
-        blockINDst(bi,1) = peakLOCS(bi - 1) + 1;
-        blockINDst(bi,2) = blockINDst(bi,1) + 269;
-    else
-        blockINDst(bi,1) = peakLOCS(bi - 1) + 1;
-        blockINDst(bi,2) = peakLOCS(bi);
-    end
-end
-
-if any(reshape(blockINDst > numel(eventStamps),numel(blockINDst),1))
-    ckTT2 = false;
-else
-    ckTT2 = true;
-end
-
-% CHECK 3: Check the each block has 135 elements
-ttlCOUNT = zeros(5,1);
-for tTC = 1:5
-
-    testBlockID = eventIDcs(blockINDst(tTC,1):blockINDst(tTC,2));
-    ttlCOUNT(tTC) = sum(contains(testBlockID,'(0x0001)'));
-
-end
-
-if any(ttlCOUNT ~= 135)
-    ckTT3 = false;
-else
-    ckTT3 = true;
-end
-
-
-[outTable] = getTTLevTab(ckTT1, ckTT2, ckTT3, blockINDst, ttlCOUNT, eventIDcs, eventStamps)
-
 
 % Clean TTL id codes
 switch ttlStyle
     case 1
+        % CHECK 1: Check for all TTL events
+        hexFlagsTTL = eventIDcs(contains(eventIDcs,'TTL Input'));
+        hexOnly = extractBetween(hexFlagsTTL,'(',')');
+        decFhex = hex2dec(hexOnly);
+        decFhex2 = decFhex(decFhex ~= 0);
 
-        posTTLinds = contains(eventIDcs,'(0x0001)');
-        if sum(posTTLinds) == 0
-            posTTLinds = contains(eventIDcs,'send_TTL');
+        tempTab = tabulate(categorical(decFhex2));
+        if height(tempTab) < 5
+            ckTT1 = false;
+        else
+            ckTT1 = true;
+        end
 
-            if sum(posTTLinds) < 675
+        % CHECK 2: Check for 5 blocks
+        [~,peakLOCS,~] = findpeaks(diff(eventStamps),'MinPeakDistance',100,'MinPeakHeight',11000000);
 
-                posTTLinds = contains(eventIDcs,'send_TTL') | ~contains(eventIDcs,'0x000');
+        blockINDst = zeros(4,2);
 
+        for bi = 1:5
+            if bi == 1
+                blockINDst(bi,1) = 1;
+                blockINDst(bi,2) = peakLOCS(bi);
+            elseif bi == 5
+                blockINDst(bi,1) = peakLOCS(bi - 1) + 1;
+                blockINDst(bi,2) = blockINDst(bi,1) + 269;
+            else
+                blockINDst(bi,1) = peakLOCS(bi - 1) + 1;
+                blockINDst(bi,2) = peakLOCS(bi);
             end
         end
-        newEvts = eventStamps(posTTLinds);
+
+        if any(reshape(blockINDst > numel(eventStamps),numel(blockINDst),1))
+            ckTT2 = false;
+        else
+            ckTT2 = true;
+        end
+
+        % CHECK 3: Check the each block has 135 elements
+        ttlCOUNT = zeros(5,1);
+        eventBlocksAll = cell(5,1);
+        eventBlockIDs = cell(5,1);
+        for tTC = 1:5
+
+            testBlockID = eventIDcs(blockINDst(tTC,1):blockINDst(tTC,2));
+            blockNUMS = blockINDst(tTC,1):blockINDst(tTC,2);
+            ttlCOUNT(tTC) = sum(contains(testBlockID,'(0x0001)'));
+            tmpTTLcount = testBlockID(contains(testBlockID,'(0x0001)'));
+            eventBlocksAll{tTC,1} = tmpTTLcount;
+            eventBlockIDs{tTC,1} = transpose(blockNUMS(contains(testBlockID,'(0x0001)')));
+
+        end
+
+        if any(ttlCOUNT ~= 135)
+            ckTT3 = false;
+        else
+            ckTT3 = true;
+        end
+
+
+        [eventTABLE] = getTTLevTab(ckTT1, ckTT2, ckTT3, ttlCOUNT, eventBlockIDs, eventStamps);
+
 
     case 2
 
@@ -145,37 +139,43 @@ end
 
 
 
+
+
+
+
+
+
 % If trim input:
 % Clase001 = 51
 
-if length(newEvts) == 675
-    newEvts2use = newEvts;
-else
-    [newEvts2use] = getNewEvents(newEvts);
-end
-     
-blockS = [ones(135,1) ; ones(135,1)+1 ; ones(135,1)+2 ; ones(135,1)+3;...
-    ones(135,1)+4];
-alltrials = zeros(675,1);
-trialepID = cell(675,1);
-trialepNum = zeros(675,1);
-tstrt = 1;
-tstop = 5;
-for ti = 1:135
-    alltrials(tstrt:tstop) = zeros(5,1) + ti;
-    trialepNum(tstrt:tstop) = 1:5;
-    trialepID(tstrt:tstop) = {'choiceShow','respWindowS','respWindowE','outDispS',...
-        'outDispE'};
-    tstrt = tstop + 1;
-    tstop = tstop + 5;
-end
-triAls = alltrials;
-triAlEvsNm = trialepNum;
-triAlEvsId = trialepID;
+% if length(newEvts) == 675
+%     newEvts2use = newEvts;
+% else
+%     [newEvts2use] = getNewEvents(newEvts);
+% end
+%
+% blockS = [ones(135,1) ; ones(135,1)+1 ; ones(135,1)+2 ; ones(135,1)+3;...
+%     ones(135,1)+4];
+% alltrials = zeros(675,1);
+% trialepID = cell(675,1);
+% trialepNum = zeros(675,1);
+% tstrt = 1;
+% tstop = 5;
+% for ti = 1:135
+%     alltrials(tstrt:tstop) = zeros(5,1) + ti;
+%     trialepNum(tstrt:tstop) = 1:5;
+%     trialepID(tstrt:tstop) = {'choiceShow','respWindowS','respWindowE','outDispS',...
+%         'outDispE'};
+%     tstrt = tstop + 1;
+%     tstop = tstop + 5;
+% end
+% triAls = alltrials;
+% triAlEvsNm = trialepNum;
+% triAlEvsId = trialepID;
 
 
-eventTABLE = table(blockS, triAls, triAlEvsNm, triAlEvsId, newEvts2use,...
-    'VariableNames',{'Blocks','Trials','TrialEvNum','TrialEvID','TrialEvTm'});
+% eventTABLE = table(blockS, triAls, triAlEvsNm, triAlEvsId, newEvts2use,...
+%     'VariableNames',{'Blocks','Trials','TrialEvNum','TrialEvID','TrialEvTm'});
 
 cd(BHsavedirU)
 saveNAME = [char(subjID) , '_BehEvTable.mat'];
@@ -244,7 +244,7 @@ end
 
 
 
-function [outTable] = getTTLevTab(check1, check2, check3, blocKSS, blockTot, eventS, eventTS)
+function [outTable] = getTTLevTab(check1, check2, check3, blockTot, eventS, eventTS)
 % Check 1 = TTL hexes
 % Check 2 = 5 blocks
 % Check 3 = 135 per block
@@ -255,14 +255,16 @@ if ~check1 && check2 && ~check3
     trialepID = {};
     trialepNum = [];
     allblocks = [];
+    newEvts2use = [];
     for bbi = 1:height(blockTot)
         tmpBlck = blockTot(bbi);
 
+        tmpTS2use = eventTS(eventS{bbi});
 
-        if tmpBlck ~= 134
+        if tmpBlck ~= 135
             trialepNum0 = repmat(transpose(1:5),27,1);
             trialepNumi = trialepNum0(2:end);
-            alltrialsi = transpose(1:tmpBlck);
+            alltrialsi = transpose(2:135);
             trialepID0 = repmat(transpose({'choiceShow','respWindowS','respWindowE','outDispS',...
                 'outDispE'}),27,1);
             trialepIDi = trialepID0(2:end);
@@ -273,15 +275,22 @@ if ~check1 && check2 && ~check3
                 'outDispE'}),27,1);
         end
         blockTi = repmat(bbi,tmpBlck,1);
-        alltrials = [alltrials , alltrialsi];
-        trialepID = [trialepID , trialepIDi];
-        trialepNum = [trialepNum , trialepNumi];
-        allblocks = [allblocks , blockTi];
+        alltrials = [alltrials ; alltrialsi];
+        trialepID = [trialepID ; trialepIDi];
+        trialepNum = [trialepNum ; trialepNumi];
+        allblocks = [allblocks ; blockTi];
+        newEvts2use = [newEvts2use ; tmpTS2use];
 
     end
 end
-eventTABLE = table(allblocks, alltrials, trialepNum, trialepID, newEvts2use,...
-    'VariableNames',{'Blocks','Trials','TrialEvNum','TrialEvID','TrialEvTm'});
+
+% compute offset
+offsetCk = [diff(newEvts2use/1000000) ; nan];
+
+
+outTable = table(allblocks, alltrials, trialepNum, trialepID, newEvts2use,...
+    offsetCk,'VariableNames',{'Blocks','Trials','TrialEvNum','TrialEvID',...
+    'TrialEvTm','OffsetSecs'});
 
 
 
