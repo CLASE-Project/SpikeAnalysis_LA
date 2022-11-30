@@ -2,7 +2,7 @@ function [] = runOSORTproblem()
 %% Load in all mat files available in Folder 
 % Assumtion that files are in MAX
 
-mainDIR = 'W:\LossAversion\Patient folders\CLASE006\NWB-data\Spike_Data\sort\5.001';
+mainDIR = 'D:\LossAversionHomeTest\CLASE006\NWB-data\Spike_Data\sort\5.001';
 % cd to Main directory
 cd(mainDIR)
 % localize all possible mat files
