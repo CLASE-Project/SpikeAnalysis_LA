@@ -1,4 +1,4 @@
-function [] = processLA_LFP(bArea ,subjID, NWBdir, BEHdir, NWBname, hemi, channels, saveDIR)
+function [] = processLA_LFP(bArea ,subjID, NWBdir, BEHdir, NWBname,channels, saveDIR)
 
 arguments
 
@@ -10,7 +10,6 @@ arguments
     NWBdir (1,1) string = "NA"
     BEHdir (1,1) string = "NA"
     NWBname (1,1) string = "NA"
-    hemi (1,1) string = "L"
     channels (1,:) double = []
     saveDIR (1,1) string = "NA"
 
@@ -70,6 +69,13 @@ brainRG = cellstr(tmpNWB_LA.general_extracellular_ephys_electrodes.vectordata.ge
 hemiSph = cellstr(tmpNWB_LA.general_extracellular_ephys_electrodes.vectordata.get('hemisph').data.load());
 % Channel ID
 channID = tmpNWB_LA.general_extracellular_ephys_electrodes.vectordata.get('channID').data.load();
+
+% Select only macrowires
+microWireID = ~(channID > 200);
+wireID = wireID(microWireID);
+brainRG = brainRG(microWireID);
+hemiSph = hemiSph(microWireID);
+channID = channID(microWireID);
 
 % behavioral timestamps data are in microseconds
 % eventStamps = tmpNWB_LA.acquisition.get('events').timestamps.load;
