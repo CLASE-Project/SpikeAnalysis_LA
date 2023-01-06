@@ -4,16 +4,13 @@
 % patientID = 'CLASE_6';
 % nwbFname = 'MW12_Session_3_filter.nwb';
 % Select wires
-channS = {[262,264],257:264 ,259:264};
+channS = {257:272 };
 
-dirLet = 'H';
+dirLet = 'J';
 
-basepaths = {[dirLet,':\Patient folders\CLASE001\NWB-data\Spike_Data\'],...
-    [dirLet,':\Patient folders\CLASE007\NWB-data\Spike_Data\'],...
-    [dirLet,':\Patient folders\CLASE009\NWB-data\Spike_Data\']};
-patientID = {'CLASE001','CLASE007','CLASE009'};
-nwbFname = {'MW9_Session_6_filter.nwb',...
-    'MW13_Session_5_filter.nwb','CLASE09_Session_5_filter.nwb'};
+basepaths = {[dirLet,':\01_Coding_Datasets\LossAversionPipeTest\']};
+patientID = {'CLASE018'};
+nwbFname = {'CLASE018_Session_3_filter.nwb'};
 
 %% Step 6 Run the main Function
 
@@ -33,13 +30,13 @@ for i1 = 1:length(patientID)
 end
 
 %% Single case check -
-channS = [257, 259, 262, 264];
+channS = 257:272;
 
-dirLet = 'D';
+dirLet = 'J';
 
-basepaths = {[dirLet,':\LossAversionHomeTest\CLASE006\NWB-data\Spike_Data\']};
-patientID = {'CLASE006'};
-nwbFname = {'MW12_Session_3_filter.nwb'};
+basepaths = {[dirLet,':\01_Coding_Datasets\LossAversionPipeTest\CLASE019\NWB-Data\Spike_Data\']};
+patientID = {'CLASE019'};
+nwbFname = {'CLASE019_Session_1_filter.nwb'};
 
 alignS = [1, 2];
 for i2 = 1:2
