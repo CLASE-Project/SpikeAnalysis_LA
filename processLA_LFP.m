@@ -90,12 +90,12 @@ end
 
 cd(BEHdirU);
 
-behFilAll = dir('*.mat');
-behFilse = {behFilAll.name};
-behFilName = behFilse{1};
+% behFilAll = dir('*.mat');
+% behFilse = {behFilAll.name};
+% behFilName = behFilse{1};
 
 % load behavioral file
-load(behFilName, 'subjdata');
+% load(behFilName, 'subjdata');
 
 % load behavioralEvent table
 behTabLoc = [char(BEHdirU) , filesep , 'EventBehavior'];
