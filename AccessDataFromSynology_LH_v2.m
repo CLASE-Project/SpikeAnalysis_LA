@@ -1,7 +1,15 @@
 %% Ephys timestamps
 
 % Ensure that you have matnwb folder downloaded and on your path
-nwbMatCD = 'D:\Documents\MATLAB';
+PCname = getenv('COMPUTERNAME');
+
+switch PCname
+    case 'LISA'
+        nwbMatCD = 'D:\Documents\MATLAB';
+    case 'JAT_lab' % work computer
+        %nwbMatCD = 'X:\LossAversion\LH_test\NWB-data\NWB_Data'; % lab computer
+end
+
 cd(nwbMatCD)
 
 %nwbLOC = '\LossAversion\Patient folders\CLASE006\NWB-data\NWB_Data'; 
