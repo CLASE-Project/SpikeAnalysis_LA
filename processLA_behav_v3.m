@@ -1,4 +1,4 @@
-function [] = processLA_behav_v2(subjID , ttlStyle, ttlID, NWBdir, NWBname , behDIRsave)
+function [] = processLA_behav_v3(subjID , ttlStyle, ttlID, NWBdir, NWBname , behDIRsave)
 
 arguments
 
@@ -136,8 +136,7 @@ switch ttlStyle
 
             testBlockID = eventIDcs(blockINDst(tTC,1):blockINDst(tTC,2));
             blockNUMS = blockINDst(tTC,1):blockINDst(tTC,2);
-            %             ttlCOUNT(tTC) = sum(contains(testBlockID,'(0x0001)'));
-            %             tmpTTLcount = testBlockID(contains(testBlockID,'(0x0001)'));
+
             if matches(ttlIDu,'XXXXX')
                 ttlCOUNT(tTC) = sum(~contains(testBlockID,'(0x0000)'));
                 tmpTTLcount = testBlockID(~contains(testBlockID,'(0x0000)'));
@@ -148,7 +147,7 @@ switch ttlStyle
                 eventBlockIDs{tTC,1} = transpose(blockNUMS(contains(testBlockID,ttlIDu)));
             end
             eventBlocksAll{tTC,1} = tmpTTLcount;
-            %             eventBlockIDs{tTC,1} = transpose(blockNUMS(contains(testBlockID,'(0x0001)')));
+
             
 
         end
@@ -171,49 +170,9 @@ switch ttlStyle
     case 3 % HEX flags complete
 
         [eventTABLE] = getNewTTLs(eventIDcs,eventStamps);
-%         newEvts = eventStamps(processTTL);
 
 end
 
-
-
-
-
-
-
-
-
-% If trim input:
-% Clase001 = 51
-
-% if length(newEvts) == 675
-%     newEvts2use = newEvts;
-% else
-%     [newEvts2use] = getNewEvents(newEvts);
-% end
-%
-% blockS = [ones(135,1) ; ones(135,1)+1 ; ones(135,1)+2 ; ones(135,1)+3;...
-%     ones(135,1)+4];
-% alltrials = zeros(675,1);
-% trialepID = cell(675,1);
-% trialepNum = zeros(675,1);
-% tstrt = 1;
-% tstop = 5;
-% for ti = 1:135
-%     alltrials(tstrt:tstop) = zeros(5,1) + ti;
-%     trialepNum(tstrt:tstop) = 1:5;
-%     trialepID(tstrt:tstop) = {'choiceShow','respWindowS','respWindowE','outDispS',...
-%         'outDispE'};
-%     tstrt = tstop + 1;
-%     tstop = tstop + 5;
-% end
-% triAls = alltrials;
-% triAlEvsNm = trialepNum;
-% triAlEvsId = trialepID;
-
-
-% eventTABLE = table(blockS, triAls, triAlEvsNm, triAlEvsId, newEvts2use,...
-%     'VariableNames',{'Blocks','Trials','TrialEvNum','TrialEvID','TrialEvTm'});
 
 cd(BHsavedirU)
 saveNAME = [char(subjID) , '_BehEvTable_v2.mat'];
@@ -297,23 +256,6 @@ outTable = table(allblocks, alltrials, trialepNum, trialepID, newEvts2use,...
     'TrialEvTm','OffsetSecs'});
 
 
-% processTTL = false(length(newEvts),1);
-% for ni = 1:length(newEvts)
-%     if contains(newEvts{ni},'TTL Input')
-%         hexOnly = extractBetween(newEvts{ni},'(',')');
-%         decFhex = hex2dec(hexOnly);
-%         if ismember(decFhex,finInds)
-%             processTTL(ni) = true;
-%         else
-%             continue
-%         end
-% 
-%     else
-%         continue
-%     end
-% 
-% 
-% end
 
 end
 

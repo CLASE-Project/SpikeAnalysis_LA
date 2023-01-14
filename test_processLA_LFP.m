@@ -1,25 +1,38 @@
-% Test script for LA_LFP_process
+%% CLASE001
 
-bArea = 'amygdala';
-curDIR = 'J:';
-subI = 'clase006';
-NWBdir = [curDIR,'\01_Coding_Datasets\LossAversionPipeTest\CLASE006\NWB-data\NWB_Data'];
-BEHdir = [curDIR,'\01_Coding_Datasets\LossAversionPipeTest\CLASE006\Behavioral-data'];
-NWBname = 'MW12_Session_3_filter.nwb';
-saveLOC = [curDIR,'\01_Coding_Datasets\LossAversionPipeTest\CLASE006\NeuroPhys_Processed'];
+bArea = 'anterior cingulate';
+curDIR = 'Z:';
+subI = 'clase001';
+NWBdir = [curDIR,'\LossAversion\Patient folders\CLASE001\NWB-data\NWB_Data'];
+BEHdir = [curDIR,'\LossAversion\Patient folders\CLASE001\Behavioral-data'];
+NWBname = 'MW9_Session_6_filter.nwb';
+saveLOC = [curDIR,'\LossAversion\Patient folders\CLASE001\NeuroPhys-Processed'];
 
-processLA_LFP(bArea, subI , NWBdir, BEHdir, NWBname,"NA","NA",saveLOC)
+processLA_LFP(bArea, subI , NWBdir, BEHdir, NWBname,"NA",saveLOC)
 
 %%
 
+% load csv
+csvLOC = 'Z:\LossAversion';
+cd(csvLOC)
+patCSVtab = readtable('la_patientLocs.xlsx');
+curDIR = 'Z:';
 
-curDIR = 'J:';
-NWBdir = [curDIR,'\01_Coding_Datasets\LossAversionPipeTest\CLASE006\NWB-data\NWB_Data'];
-BEHdir = [curDIR,'\01_Coding_Datasets\LossAversionPipeTest\CLASE006\Behavioral-data'];
-NWBname = 'MW12_Session_3_filter.nwb';
-behaDIR = [curDIR ,'\01_Coding_Datasets\LossAversionPipeTest\CLASE006\Behavioral-data\EventBehavior'];
-subI = 'clase006';
-processLA_behav(subI , NWBdir, NWBname, BEHdir)
+for pi = 1:height(patCSVtab)
+
+    tmpRow = patCSVtab(pi,:);
+
+    bArea = tmpRow.brainRegion{1};
+
+    subI = tmpRow.id{1};
+    NWBdir = [curDIR,tmpRow.nwbloc{1}];
+    BEHdir = [curDIR,tmpRow.behloc{1}];
+    NWBname = tmpRow.nwbfile{1};
+    saveLOC = [curDIR,tmpRow.saveloc{1}];
+
+    processLA_LFP(bArea, subI , NWBdir, BEHdir, NWBname,"NA",saveLOC)
+
+end
 
 
 
