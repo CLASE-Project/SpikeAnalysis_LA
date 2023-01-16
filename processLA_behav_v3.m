@@ -322,10 +322,10 @@ end
 
 % compute offset
 offsetCk = [diff(newEvts2use/1000000) ; nan];
+trialNumSet = reshape(repmat(1:135,5,1),675,1);
 
-
-outTable = table(allblocks, alltrials, trialepNum, trialepID, newEvts2use,...
-    offsetCk,'VariableNames',{'Blocks','Trials','TrialEvNum','TrialEvID',...
+outTable = table(allblocks, alltrials, trialNumSet, trialepNum, trialepID, newEvts2use,...
+    offsetCk,'VariableNames',{'Blocks','Trials','TrialiNum','TrialEvNum','TrialEvID',...
     'TrialEvTm','OffsetSecs'});
 
 

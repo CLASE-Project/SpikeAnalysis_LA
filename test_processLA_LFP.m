@@ -1,12 +1,12 @@
 %% CLASE001
 
 bArea = 'anterior cingulate';
-curDIR = 'Z:';
+curDIR = 'D:';
 subI = 'clase001';
 NWBdir = [curDIR,'\LossAversion\Patient folders\CLASE001\NWB-data\NWB_Data'];
 BEHdir = [curDIR,'\LossAversion\Patient folders\CLASE001\Behavioral-data'];
 NWBname = 'MW9_Session_6_filter.nwb';
-saveLOC = [curDIR,'\LossAversion\Patient folders\CLASE001\NeuroPhys-Processed'];
+saveLOC = [curDIR,'\LossAversion\Patient folders\CLASE001\NeuroPhys_Processed'];
 
 processLA_LFP(bArea, subI , NWBdir, BEHdir, NWBname,"NA",saveLOC)
 

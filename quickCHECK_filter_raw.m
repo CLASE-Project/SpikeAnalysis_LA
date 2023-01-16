@@ -6,7 +6,7 @@ switch PCname
     case 'DESKTOP-I5CPDO7' % Office pc
         nwbLOC = 'Z:\LossAversion\Patient folders\CLASE007\NWB-data\20220526a\NWB_Data';
     case 'DESKTOP-FAGRV5G' % JAT home pc
-        nwbLOC = 'F:\01_Coding_Datasets\LossAversionPipeTest\CLASE007\NWB-data\NWB_Data';
+        nwbLOC = 'D:\LossAversion\Patient folders\CLASE007\NWB-data\NWB_Data';
         % matnwb
         addpath(genpath('C:\Users\Admin\Documents\MATLAB\matnwb-2.5.0.0'));
 

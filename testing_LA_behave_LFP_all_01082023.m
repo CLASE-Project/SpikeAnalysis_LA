@@ -1,15 +1,12 @@
 %% CLASE 001
 
 subID = 'clase001';
-nwbDi = 'H:\Patient folders\CLASE001\NWB-data\NWB_Data';
+nwbDi = 'D:\LossAversion\Patient folders\CLASE001\NWB-data\NWB_Data';
 nwbN = 'MW9_Session_6_filter.nwb';
-behD = 'H:\Patient folders\CLASE001\Behavioral-data\EventBehavior';
+behD = 'D:\LossAversion\Patient folders\CLASE001\Behavioral-data\EventBehavior';
 ttlS = 1;
 
-% processLA_behav( subID , ttlS  , nwbDi, nwbN , behD)
-
-processLA_behav_v3( subID , ttlS  , nwbDi, nwbN , behD)
-
+processLA_behav_v3( subID , ttlS ,'NA' , nwbDi, nwbN , behD)
 
 %% CLASE 006
 
