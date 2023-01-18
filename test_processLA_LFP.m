@@ -8,7 +8,7 @@ BEHdir = [curDIR,'\LossAversion\Patient folders\CLASE001\Behavioral-data'];
 NWBname = 'MW9_Session_6_filter.nwb';
 saveLOC = [curDIR,'\LossAversion\Patient folders\CLASE001\NeuroPhys_Processed'];
 
-processLA_LFP(bArea, subI , NWBdir, BEHdir, NWBname,"NA",saveLOC)
+processLA_LFP_BP(bArea, subI , NWBdir, BEHdir, NWBname,"NA",saveLOC)
 
 %%
 
