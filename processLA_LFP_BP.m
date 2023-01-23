@@ -126,14 +126,17 @@ infoTable = table(repmat(bArea,size(wireIDs)), wireIDs , hemiSph , channU , 'Var
 ephysData = ma_neuro(brArIND,:);
 
 % Loop through trials
-% ave_uPv = zeros(135,7,length(channU));
-% peak_uPv = zeros(135,7,length(channU));
-% freq_aP_uPv = zeros(135,7,length(channU));
+ave_maxPow = zeros(4,7,135,length(channU));
+std_maxPow = zeros(4,7,135,length(channU));
+max_pow    = zeros(4,7,135,length(channU));
+freq_atMP  = zeros(4,7,135,length(channU));
 raw_uPv = cell(135,length(channU)-1);
 raw_Pxx = cell(135,length(channU)-1);
 raw_PxxPS = cell(135,length(channU)-1);
 raw_rawTS = cell(135,length(channU)-1);
 raw_Spec = cell(135,length(channU)-1);
+raw_SpecT = cell(135,1);
+raw_SpecF = cell(135,1);
 raw_CWT = cell(135,length(channU)-1);
 timeIndsRaw = nan(7,135);
 timeIndsRel = nan(7,135);
@@ -145,88 +148,127 @@ for bi = 1:135
     % Identify time index and determine choice start to output end
     trialIND = ismember(eventTABLE.TrialiNum,bi);
     timeEveTmp = eventTABLE.TrialEvTm(trialIND);
-    trSTART_m500 = timeEveTmp(1) - 500000; % - 500 ms
-    trEND_p500 = timeEveTmp(5) + 500000; % + 500 ms
-    % Get MA-time vector index for trial block
-    trSTARTind = getMAind(ma_ts_dn, trSTART_m500); 
-    trENDind = getMAind(ma_ts_dn, trEND_p500);
-    allTimesTS = [trSTART_m500 ; timeEveTmp ; trEND_p500];
-    for ati = 1:length(allTimesTS)
+    %     trialEVtmp = eventTABLE.TrialEvNum(trialIND);
+    if sum(trialIND) ~= 5
+        for ci = 1:length(channU)-1
+            ave_maxPow(:,:,bi,ci) = nan(4,7);
+            std_maxPow(:,:,bi,ci) = nan(4,7);
+            max_pow(:,:,bi,ci) = nan(4,7);
+            freq_atMP(:,:,bi,ci) = nan(4,7);
 
-       timeIndsRaw(ati,bi) = getMAind(ma_ts_dn, allTimesTS(ati));
+            raw_SpecF{bi} = nan;
+            raw_SpecT{bi} = nan;
+            raw_Spec{bi, ci} = nan;
+            raw_CWT{bi , ci} = nan;
+            raw_uPv{bi,ci} = nan;
+            raw_Pxx{bi,ci} = nan;
+            raw_PxxPS{bi,ci} = nan;
+            raw_rawTS{bi,ci} = nan;
+  
+        end
 
+        continue
+    else
+
+        trSTART_m500 = timeEveTmp(1) - 500000; % - 500 ms
+        trEND_p500 = timeEveTmp(5) + 500000; % + 500 ms
+        % Get MA-time vector index for trial block
+        trSTARTind = getMAind(ma_ts_dn, trSTART_m500);
+        trENDind = getMAind(ma_ts_dn, trEND_p500);
+        allTimesTS = [trSTART_m500 ; timeEveTmp ; trEND_p500];
+        for ati = 1:length(allTimesTS)
+
+            timeIndsRaw(ati,bi) = getMAind(ma_ts_dn, allTimesTS(ati));
+
+        end
+
+        timeIndsRel(:,bi) = [1 ; cumsum(diff(timeIndsRaw(:,bi)))+1];
+        for ci = 1:length(channU)-1
+            % Get voltage index
+            chanTriND_1 = double(ephysData(ci,trSTARTind:trENDind));
+
+            % Get bipolar reference
+            chanTriND_2 = double(ephysData(ci+1,trSTARTind:trENDind));
+            tmpTSmean = mean([chanTriND_1 ; chanTriND_2]);
+            chanTriND = chanTriND_1 - tmpTSmean;
+
+            % Process LFP -
+            % 1. Compute PSD
+            % 2. Extract mean power bands of interest
+            % 3. Compute uPv for each freqeuncy band of interest
+            % 4. Determine peak freqeuncy for uPv for each frequency band of
+            % interest
+            % 1.
+            [Pxx , Fxx] = pwelch(double(chanTriND), hanning(500), 250, 256, 500, 'onesided');
+            uVp_t = sqrt(Pxx).*rms(hanning(500)).*sqrt(2).*2.*500/256;
+            PxxP = 10*log10(Pxx);
+
+            [PxxTps , FxxPS] = pspectrum(double(chanTriND),500,'FrequencyResolution',2);
+            PxxPS = pow2db(PxxTps);
+
+            % JAT old
+            %       [S,F,T] = pspectrum(double(chanTriND),500,'spectrogram',TimeResolution = 0.1,...
+            %             Leakage = 0.85, OverlapPercent=95);
+
+            [S,F,T] = pspectrum(double(chanTriND),500,'spectrogram',...
+                TimeResolution = 0.1,...
+                Leakage = 0.85,...
+                OverlapPercent = 95);
+            % DAN
+            %         [S, F, T] = pspectrum(double(chanTriND), 500, "spectrogram",...
+            %             TimeResolution= .200, OverlapPercent=95);
+
+            [cfs,frq] = cwt(double(chanTriND),500);
+            abCFS = abs(cfs);
+            timeCFS = (0:numel(double(chanTriND))-1)/500;
+
+            raw_SpecS = S;
+            raw_SpecF{bi} = F;
+            raw_SpecT{bi} = T;
+            raw_Spec{bi, ci} = raw_SpecS;
+            raw_CWTS.CFS = abCFS;
+            raw_CWTS.F = frq;
+            raw_CWTS.T = timeCFS;
+
+            raw_CWT{bi , ci} = raw_CWTS;
+
+            raw_uPv{bi,ci} = uVp_t;
+            raw_Pxx{bi,ci} = [PxxP ; Fxx];
+            raw_PxxPS{bi,ci} = [PxxPS ; FxxPS];
+            raw_rawTS{bi,ci} = chanTriND;
+
+            timeBins = timeIndsRel(:,bi);
+            
+            
+            
+            
+            [tp_ave_pow , tp_std_pow , tp_max_pow, ...
+                tp_freq_atMP] = getFreqBinData(S,F,T,timeBins);
+
+            ave_maxPow(:,:,bi,ci) = tp_ave_pow;
+            std_maxPow(:,:,bi,ci) = tp_std_pow;
+            max_pow(:,:,bi,ci) = tp_max_pow;
+            freq_atMP(:,:,bi,ci) = tp_freq_atMP;
+
+            %         troubleshootPSD(chanTriND, PxxP , uVp_t , Fxx)
+            %         pause
+            %         close all
+
+            disp(['Channel ', num2str(ci), ' of ', num2str(length(channU))])
+        end
+        disp(['Trial ', num2str(bi), ' of 135'])
     end
+end
 
-    timeIndsRel(:,bi) = [1 ; cumsum(diff(timeIndsRaw(:,bi)))+1];
-    for ci = 1:length(channU)-1
-        % Get voltage index
-        chanTriND_1 = double(ephysData(ci,trSTARTind:trENDind));
 
-        % Get bipolar reference
-        chanTriND_2 = double(ephysData(ci+1,trSTARTind:trENDind));
-        tmpTSmean = mean([chanTriND_1 ; chanTriND_2]);
-        chanTriND = chanTriND_1 - tmpTSmean;
-
-        % Process LFP - 
-        % 1. Compute PSD
-        % 2. Extract mean power bands of interest
-        % 3. Compute uPv for each freqeuncy band of interest
-        % 4. Determine peak freqeuncy for uPv for each frequency band of
-        % interest
-        % 1.
-        [Pxx , Fxx] = pwelch(double(chanTriND), hanning(500), 250, 256, 500, 'onesided');
-        uVp_t = sqrt(Pxx).*rms(hanning(500)).*sqrt(2).*2.*500/256;
-        PxxP = 10*log10(Pxx);
-
-        [PxxTps , FxxPS] = pspectrum(double(chanTriND),500,'FrequencyResolution',2);
-        PxxPS = pow2db(PxxTps);
-
-        [S,F,T] = pspectrum(double(chanTriND),500,'spectrogram',TimeResolution = 0.1,...
-            Leakage = 0.85);
-
-        [cfs,frq] = cwt(double(chanTriND),500);
-        abCFS = abs(cfs);
-        timeCFS = (0:numel(double(chanTriND))-1)/500;
-
-        raw_SpecS.S = S;
-        raw_SpecS.F = F;
-        raw_SpecS.T = T;
-        raw_Spec{bi, ci} = raw_SpecS;
-        raw_CWTS.CFS = abCFS;
-        raw_CWTS.F = frq;
-        raw_CWTS.T = timeCFS;
-
-        raw_CWT{bi , ci} = raw_CWTS;
-
-        raw_uPv{bi,ci} = uVp_t;
-        raw_Pxx{bi,ci} = [PxxP ; Fxx];
-        raw_PxxPS{bi,ci} = [PxxPS ; FxxPS];
-        raw_rawTS{bi,ci} = chanTriND;
-
-%         troubleshootPSD(chanTriND, PxxP , uVp_t , Fxx)
-%         pause
-%         close all
-
-%         bandStget = [0 , 4 ; 4 , 8 ; 8 , 13 ; 13 , 21.5 ; 21.5 , 30 ;...
-%             30 , 90; 90 , 250];
-% 
-%         for boi = 1:height(bandStget)
-% 
-%             freqRegion = Fxx >= bandStget(boi,1) & Fxx <= bandStget(boi,2);
-%             tmpFreqs = Fxx(freqRegion);
-%             powData = uVp_t(freqRegion);
-%             [maxPow, maxLoc] = max(powData);
-%   
-%             maxFq = tmpFreqs(maxLoc);
-% 
-%             ave_uPv(bi,boi,ci) = mean(powData);
-%             peak_uPv(bi,boi,ci) = maxPow;
-%             freq_aP_uPv(bi,boi,ci) = maxFq; 
-%    
-%         end
-       disp(['Channel ', num2str(ci), ' of ', num2str(length(channU))])
+raw_SpecMatAll = cell(135,1);
+for rsi = 1:height(raw_Spec)
+    tmpTrial = raw_Spec(rsi,:);
+    rawSpecMatT = zeros(1024,width(tmpTrial{1}),width(tmpTrial));
+    for chti = 1:width(tmpTrial)
+        rawSpecMatT(:,:,chti) = tmpTrial{chti};
     end
-    disp(['Trial ', num2str(bi), ' of 135'])
+    raw_SpecMatAll{rsi} = rawSpecMatT;
 end
 
 % outDATA.ave_uPv = ave_uPv;
@@ -243,6 +285,12 @@ outDATA.dataproc = datetime("now");
 outDATA.timeData.timeIndsRaw = timeIndsRaw;
 outDATA.timeData.timeIndsRel = timeIndsRel;
 outDATA.timeData.timeMarkID = timeMarkID;
+outDATA.byBand.ave_maxPow = ave_maxPow;
+outDATA.byBand.std_maxPow = std_maxPow;
+outDATA.byBand.max_pow = max_pow;
+outDATA.byBand.freq_at_maxPow = freq_atMP;
+outDATA.Spec.T = raw_SpecT;
+outDATA.Spec.F = raw_SpecF;
 
 
 % Save Location
@@ -250,19 +298,66 @@ cd(saveDIRu)
 
 % Save Name
 saveNAME1 = [char(subjID) , '_LFPprocessByTrial.mat'];
-saveNAME2 = [char(subjID) , '_LFPprocessByTrial_Spec.mat'];
+% saveNAME2 = [char(subjID) , '_LFPprocessByTrial_Spec.mat'];
 saveNAME3 = [char(subjID) , '_LFPprocessByTrial_CWT.mat'];
 
 % Save Data
 save(saveNAME1 , "outDATA",'-v7.3');
-save(saveNAME2 , "raw_Spec",'-v7.3');
+% save(saveNAME2 , "raw_Spec",'-v7.3');
 save(saveNAME3 , "raw_CWT",'-v7.3');
+
+for svSp = 1:height(raw_SpecMatAll)
+    saveNameT = [char(subjID) , '_LFPByTrial_Spec_', num2str(svSp) '.mat'];
+    trialSpecTro = raw_SpecMatAll{svSp};
+    save(saveNameT , "trialSpecTro",'-v7.3');
+    disp(['Saved ' , num2str(svSp)])
+end
+
 
 end
 
 
 
+function [tmp_ave_pow , tmp_std_pow , tmp_max_pow, ...
+    tmp_freq_atMP] = getFreqBinData(S,F,T,timeBins)
 
+bandStget = [0 , 4 ; 4 , 8 ; 8 , 13 ; 13 , 21.5 ; 21.5 , 30 ;...
+    30 , 90; 90 , 250];
+ts_inSecs = timeBins/500;
+ts_2use = round(ts_inSecs(2:6),3);
+% NEED timeBINS
+tmp_ave_pow = zeros(4,7);
+tmp_std_pow = zeros(4,7);
+tmp_max_pow = zeros(4,7);
+tmp_freq_atMP = zeros(4,7);
+for ti = 1:4
+    tmp_TP = T > ts_2use(ti) & T < ts_2use(ti+1); % Use T
+    if sum(tmp_TP) < 5
+        tmp_ave_pow(ti,:) = nan;
+        tmp_std_pow(ti,:) = nan;
+        tmp_max_pow(ti,:) = nan;
+        tmp_freq_atMP(ti,:) = nan;
+    else
+        tmp_S_T = S(:,tmp_TP);
+        for boi = 1:height(bandStget)
+            freqRegion = F >= bandStget(boi,1) & F <= bandStget(boi,2);
+            tmpFreqs = F(freqRegion);
+            powData = tmp_S_T(freqRegion,:);
+            maxByFreq = max(powData,[],2);
+            [maxPow, maxLoc] = max(maxByFreq);
+
+            maxFq = tmpFreqs(maxLoc);
+
+            tmp_ave_pow(ti,boi) = mean(powData,"all");
+            tmp_std_pow(ti,boi) = std(powData,[],"all");
+            tmp_max_pow(ti,boi) = maxPow;
+            tmp_freq_atMP(ti,boi) = maxFq;
+        end
+    end
+end
+
+
+end
 
 
 
@@ -274,3 +369,6 @@ function [neuroTMind] = getMAind(neuroTimestmps, eventTime)
 
 
 end
+
+
+

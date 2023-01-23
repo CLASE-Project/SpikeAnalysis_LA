@@ -319,12 +319,35 @@ for bbi = 1:height(blockTot)
 
 end
 % end
+alltrials2 = zeros(size(alltrials));
+curVal = 0;
+for tti = 1:length(alltrials)
+    
+    if tti == 1
+        alltrials2(tti) = alltrials(tti);
+        curVal = curVal + alltrials2(tti);
+    elseif tti ~= length(alltrials)
+
+        tmpCheck = alltrials(tti) - alltrials(tti - 1);
+        if tmpCheck == 1
+            alltrials2(tti) = curVal + 1;
+            curVal = alltrials2(tti);
+        else
+            alltrials2(tti) = (alltrials(tti - 1) + tmpCheck) + curVal;
+            curVal = alltrials2(tti);
+        end
+    else
+         alltrials2(tti) = curVal + 1;
+    end
+
+end
 
 % compute offset
 offsetCk = [diff(newEvts2use/1000000) ; nan];
 trialNumSet = reshape(repmat(1:135,5,1),675,1);
+trialNumSetu = trialNumSet(alltrials2);
 
-outTable = table(allblocks, alltrials, trialNumSet, trialepNum, trialepID, newEvts2use,...
+outTable = table(allblocks, alltrials, trialNumSetu, trialepNum, trialepID, newEvts2use,...
     offsetCk,'VariableNames',{'Blocks','Trials','TrialiNum','TrialEvNum','TrialEvID',...
     'TrialEvTm','OffsetSecs'});
 
