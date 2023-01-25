@@ -126,10 +126,10 @@ infoTable = table(repmat(bArea,size(wireIDs)), wireIDs , hemiSph , channU , 'Var
 ephysData = ma_neuro(brArIND,:);
 
 % Loop through trials
-ave_maxPow = zeros(4,7,135,length(channU));
-std_maxPow = zeros(4,7,135,length(channU));
-max_pow    = zeros(4,7,135,length(channU));
-freq_atMP  = zeros(4,7,135,length(channU));
+ave_maxPow = zeros(6,7,135,length(channU));
+std_maxPow = zeros(6,7,135,length(channU));
+max_pow    = zeros(6,7,135,length(channU));
+freq_atMP  = zeros(6,7,135,length(channU));
 raw_uPv = cell(135,length(channU)-1);
 raw_Pxx = cell(135,length(channU)-1);
 raw_PxxPS = cell(135,length(channU)-1);
@@ -151,10 +151,10 @@ for bi = 1:135
     %     trialEVtmp = eventTABLE.TrialEvNum(trialIND);
     if sum(trialIND) ~= 5
         for ci = 1:length(channU)-1
-            ave_maxPow(:,:,bi,ci) = nan(4,7);
-            std_maxPow(:,:,bi,ci) = nan(4,7);
-            max_pow(:,:,bi,ci) = nan(4,7);
-            freq_atMP(:,:,bi,ci) = nan(4,7);
+            ave_maxPow(:,:,bi,ci) = nan(6,7);
+            std_maxPow(:,:,bi,ci) = nan(6,7);
+            max_pow(:,:,bi,ci) = nan(6,7);
+            freq_atMP(:,:,bi,ci) = nan(6,7);
 
             raw_SpecF{bi} = nan;
             raw_SpecT{bi} = nan;
@@ -324,13 +324,14 @@ function [tmp_ave_pow , tmp_std_pow , tmp_max_pow, ...
 bandStget = [0 , 4 ; 4 , 8 ; 8 , 13 ; 13 , 21.5 ; 21.5 , 30 ;...
     30 , 90; 90 , 250];
 ts_inSecs = timeBins/500;
-ts_2use = round(ts_inSecs(2:6),3);
+% ts_2use = round(ts_inSecs(2:6),3);
+ts_2use = round(ts_inSecs,3);
 % NEED timeBINS
-tmp_ave_pow = zeros(4,7);
-tmp_std_pow = zeros(4,7);
-tmp_max_pow = zeros(4,7);
-tmp_freq_atMP = zeros(4,7);
-for ti = 1:4
+tmp_ave_pow = zeros(6,7);
+tmp_std_pow = zeros(6,7);
+tmp_max_pow = zeros(6,7);
+tmp_freq_atMP = zeros(6,7);
+for ti = 1:6
     tmp_TP = T > ts_2use(ti) & T < ts_2use(ti+1); % Use T
     if sum(tmp_TP) < 5
         tmp_ave_pow(ti,:) = nan;

@@ -67,7 +67,7 @@ cd(csvLOC)
 patCSVtab = readtable('la_patientLocs.xlsx');
 curDIR = 'D:';
 
-for pi = 6:height(patCSVtab)
+for pi = 1:5
 
     tmpRow = patCSVtab(pi,:);
 
