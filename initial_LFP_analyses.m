@@ -117,11 +117,11 @@ end
 
 
 %%
-behDIR = 'D:\LossAversion\Patient folders\CLASE001\Behavioral-data';
-ephysDIR = 'D:\LossAversion\Patient folders\CLASE001\NeuroPhys_Processed';
+behDIR = 'D:\LossAversion\Patient folders\CLASE007\Behavioral-data';
+ephysDIR = 'D:\LossAversion\Patient folders\CLASE007\NeuroPhys_Processed';
 bandOfInt = 4;
-epoch1 = 1;
-epoch2 = 4;
+epoch1 = 2;
+epoch2 = 5;
 
 seegLA_beh_AVEpower(behDIR , ephysDIR, bandOfInt , epoch1, epoch2)
 

@@ -32,7 +32,7 @@ for ggi = 1:2
             trial2use = behPrep.gainONLY;
     end
 
-    tiledlayout(4,4)
+    tiledlayout(4,ceil(size(outDATA.byBand.ave_maxPow,4)/4))
     for ci = 1:size(avePower,4)
 
         trials_E1 = squeeze(avePower(epoch1,bandOfInt,trial2use,ci));
