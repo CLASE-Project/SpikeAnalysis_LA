@@ -116,15 +116,277 @@ for ggi = 1:2
 end
 
 
-%%
+%% CLASE007
+
 behDIR = 'D:\LossAversion\Patient folders\CLASE007\Behavioral-data';
 ephysDIR = 'D:\LossAversion\Patient folders\CLASE007\NeuroPhys_Processed';
 bandOfInt = 4;
 epoch1 = 2;
 epoch2 = 5;
+wire = 7;
+channS = 67:72;
+titLE = 'Putative amy contacts';
 
-seegLA_beh_AVEpower(behDIR , ephysDIR, bandOfInt , epoch1, epoch2)
+% Add channel number and wire number
 
+
+% seegLA_beh_AVEpower(behDIR , ephysDIR, bandOfInt , epoch1, epoch2)
+seegLA_beh_AVEpowerBASE_summary_v2(behDIR , ephysDIR, bandOfInt , epoch1, epoch2, wire, channS, titLE)
+
+%% NON AMy contacts
+
+
+
+channS = 73:79;
+titLE = 'Putative non-amy contacts';
+
+% Add channel number and wire number
+
+
+% seegLA_beh_AVEpower(behDIR , ephysDIR, bandOfInt , epoch1, epoch2)
+seegLA_beh_AVEpowerBASE_summary_v(behDIR , ephysDIR, bandOfInt , epoch1, epoch2, wire, channS, titLE)
+
+
+%% CLASE 008
+
+close all
+behDIR = 'D:\LossAversion\Patient folders\CLASE008\Behavioral-data';
+ephysDIR = 'D:\LossAversion\Patient folders\CLASE008\NeuroPhys_Processed';
+bandOfInt = 4;
+epoch1 = 2;
+epoch2 = 5;
+wire = 11; % 11 and 1
+channS = 120:125; % 120:131 and 1:12
+titLE = 'Putative amy contacts';
+
+% Add channel number and wire number
+
+
+% seegLA_beh_AVEpowerBASE_v2(behDIR , ephysDIR, bandOfInt , epoch1, epoch2, wire, channS)
+seegLA_beh_AVEpowerBASE_summary_v2(behDIR , ephysDIR, bandOfInt , epoch1, epoch2, wire, channS, titLE)
+
+%% 
+
+wire = 1; % 11 and 1
+channS = 6:12; % 120:131 and 1:12
+titLE = 'Putative non-amy contacts';
+
+% Add channel number and wire number
+
+
+% seegLA_beh_AVEpower(behDIR , ephysDIR, bandOfInt , epoch1, epoch2)
+seegLA_beh_AVEpowerBASE_summary_v(behDIR , ephysDIR, bandOfInt , epoch1, epoch2, wire, channS, titLE)
+
+
+
+%% CLASE 009
+
+close all
+behDIR = 'D:\LossAversion\Patient folders\CLASE009\Behavioral-data';
+ephysDIR = 'D:\LossAversion\Patient folders\CLASE009\NeuroPhys_Processed';
+bandOfInt = 4;
+epoch1 = 2;
+epoch2 = 5;
+wire = 1; % 1 and 4
+channS = 4:8; % 4:8 and 39:45
+titLE = 'Putative amy contacts';
+
+% Add channel number and wire number
+
+
+% seegLA_beh_AVEpowerBASE_v2(behDIR , ephysDIR, bandOfInt , epoch1, epoch2, wire, channS)
+seegLA_beh_AVEpowerBASE_summary_v2(behDIR , ephysDIR, bandOfInt , epoch1, epoch2, wire, channS, titLE)
+
+
+%% CLASE 006
+
+close all
+behDIR = 'D:\LossAversion\Patient folders\CLASE006\Behavioral-data';
+ephysDIR = 'D:\LossAversion\Patient folders\CLASE006\NeuroPhys_Processed';
+bandOfInt = 4;
+epoch1 = 2;
+epoch2 = 5;
+wire = 7; % 
+channS = 95:100; % 
+titLE = 'Putative amy contacts';
+
+% Add channel number and wire number
+
+
+% seegLA_beh_AVEpowerBASE_v2(behDIR , ephysDIR, bandOfInt , epoch1, epoch2, wire, channS)
+seegLA_beh_AVEpowerBASE_summary_v2(behDIR , ephysDIR, bandOfInt , epoch1, epoch2, wire, channS, titLE)
+
+%% CLASE 018
+
+close all
+behDIR = 'D:\LossAversion\Patient folders\CLASE018\Behavioral-data';
+ephysDIR = 'D:\LossAversion\Patient folders\CLASE018\NeuroPhys_Processed';
+bandOfInt = 4;
+epoch1 = 2;
+epoch2 = 5;
+wire = 2; % 
+channS = 11:16; % 
+titLE = 'Putative amy contacts';
+
+% Add channel number and wire number
+
+
+% seegLA_beh_AVEpowerBASE_v2(behDIR , ephysDIR, bandOfInt , epoch1, epoch2, wire, channS)
+seegLA_beh_AVEpowerBASE_summary_v2(behDIR , ephysDIR, bandOfInt , epoch1, epoch2, wire, channS, titLE)
+
+%% CLASE 019
+
+close all
+behDIR = 'D:\LossAversion\Patient folders\CLASE019\Behavioral-data';
+ephysDIR = 'D:\LossAversion\Patient folders\CLASE019\NeuroPhys_Processed';
+bandOfInt = 4;
+epoch1 = 2;
+epoch2 = 5;
+wire = 3; % 
+channS = 26:30; % 
+titLE = 'Putative amy contacts';
+
+% Add channel number and wire number
+
+
+% seegLA_beh_AVEpowerBASE_v2(behDIR , ephysDIR, bandOfInt , epoch1, epoch2, wire, channS)
+seegLA_beh_AVEpowerBASE_summary_v2(behDIR , ephysDIR, bandOfInt , epoch1, epoch2, wire, channS, titLE)
+
+%% All patients gain / loss
+
+
+caseIDs = {'CLASE007','CLASE008','CLASE009','CLASE018','CLASE019'};
+behDIRs = {'D:\LossAversion\Patient folders\CLASE007\Behavioral-data',...
+           'D:\LossAversion\Patient folders\CLASE008\Behavioral-data',...
+           'D:\LossAversion\Patient folders\CLASE009\Behavioral-data',...
+           'D:\LossAversion\Patient folders\CLASE018\Behavioral-data',...
+           'D:\LossAversion\Patient folders\CLASE019\Behavioral-data'};
+ephysDIRs = {'D:\LossAversion\Patient folders\CLASE007\NeuroPhys_Processed',...
+           'D:\LossAversion\Patient folders\CLASE008\NeuroPhys_Processed',...
+           'D:\LossAversion\Patient folders\CLASE009\NeuroPhys_Processed',...
+           'D:\LossAversion\Patient folders\CLASE018\NeuroPhys_Processed',...
+           'D:\LossAversion\Patient folders\CLASE019\NeuroPhys_Processed'};
+bandOfInt = 4;
+epoch1 = 2;
+epoch2 = 5;
+wireSS = [7 , 11 , 1 , 2 , 3];
+channSal = {67:72 , 120:125, 4:8 , 11:16, 26:30};
+
+allpatsSt = cell(1,5);
+allpatsPc = cell(1,5);
+for si = 1:length(channSal)
+
+    [allpatsSt{si} , allpatsPc{si}] = seegLA_beh_AVEpowerBASE_allPats(behDIRs{si} ,...
+        ephysDIRs{si}, bandOfInt , epoch1, epoch2, wireSS(si), channSal{si});
+
+end
+
+
+
+for plotSi = 1:5
+
+    e1point = allpatsPc{plotSi}.E1;
+    e2point = allpatsPc{plotSi}.E2;
+    hold on
+    if allpatsSt{plotSi}.E1 < 0.5
+        scatter(1, e1point , 50,[0 0.4470 0.7410],'filled')
+    else
+        scatter(1, e1point , 50,[0 0.4470 0.7410])
+    end
+
+    if allpatsSt{plotSi}.E2 < 0.5
+        scatter(2, e2point , 50,[0.8500 0.3250 0.0980],'filled')
+    else
+        scatter(2, e2point , 50,[0.8500 0.3250 0.0980])
+    end
+
+end
+
+xlim([0.5 2.5])
+xticks([1 2])
+xticklabels({'Evaluation','Outcome'})
+ylabel('Percent difference from baseline')
+
+
+
+
+
+%%
+
+
+caseIDs = {'CLASE007','CLASE008','CLASE009','CLASE018','CLASE019'};
+behDIRs = {'D:\LossAversion\Patient folders\CLASE007\Behavioral-data',...
+           'D:\LossAversion\Patient folders\CLASE008\Behavioral-data',...
+           'D:\LossAversion\Patient folders\CLASE009\Behavioral-data',...
+           'D:\LossAversion\Patient folders\CLASE018\Behavioral-data',...
+           'D:\LossAversion\Patient folders\CLASE019\Behavioral-data'};
+ephysDIRs = {'D:\LossAversion\Patient folders\CLASE007\NeuroPhys_Processed',...
+           'D:\LossAversion\Patient folders\CLASE008\NeuroPhys_Processed',...
+           'D:\LossAversion\Patient folders\CLASE009\NeuroPhys_Processed',...
+           'D:\LossAversion\Patient folders\CLASE018\NeuroPhys_Processed',...
+           'D:\LossAversion\Patient folders\CLASE019\NeuroPhys_Processed'};
+bandOfInt = 4;
+epoch1 = 2;
+epoch2 = 5;
+wireSS = [7 , 11 , 1 , 2 , 3];
+channSal = {67:72 , 120:125, 4:8 , 11:16, 26:30};
+
+allpatsSt = cell(1,5);
+allpatsPc = cell(1,5);
+for si = 1:length(channSal)
+
+    for bi = 1:7
+
+        [allpatsSt{si,bi} , allpatsPc{si,bi}] = seegLA_beh_AVEpowerBASE_allPats(behDIRs{si} ,...
+            ephysDIRs{si}, bi , epoch1, epoch2, wireSS(si), channSal{si});
+
+    end
+
+end
+
+allSigcounts = zeros(7,2);
+for bandi = 1:7
+    for plotSi = 1:5
+
+
+        e1point = allpatsSt{plotSi,bandi}.E1;
+        e2point = allpatsSt{plotSi,bandi}.E2;
+
+        if e1point < 0.05
+            allSigcounts(bandi,1) = allSigcounts(bandi,1) + 1;
+        end
+
+        if e2point < 0.05
+            allSigcounts(bandi,2) = allSigcounts(bandi,2) + 1;
+        end
+
+    end
+end
+
+bar(allSigcounts)
+yticks([0 1 2 3 4 5])
+ylabel('# subjects with significant difference from baseline')
+xticklabels({'delta','theta','alpha','low beta','high beta','low gamma','high gamma'})
+legend('Evaluation','Outcome')
+
+xlim([0.5 2.5])
+xticks([1 2])
+xticklabels({'Evaluation','Outcome'})
+ylabel('Percent difference from baseline')
+
+
+
+
+
+
+%% spectro analysis
+behDIR = 'D:\LossAversion\Patient folders\CLASE007\Behavioral-data';
+ephysDIR = 'D:\LossAversion\Patient folders\CLASE007\NeuroPhys_Processed';
+
+wire = 7;
+channS = 67:72;
+
+spectroPLOT_LA_v1(behDIR , ephysDIR, wire, channS)
 
 
 
