@@ -138,17 +138,21 @@ for chI = 1:size(trialBandDat,3)
     for tti = 1:size(tmpChannel,1)
         blockCount = 0;
         tmpTrial = tmpChannel(tti,:);
-        
+
         for ssI = 1:length(tmpTrial)
 
             if tmpTrial(ssI) > 4 || tmpTrial(ssI) < -4
 
-                if tmpTrialSm(tti, ssI - 1) == 0
+                if ssI == 1
+                    blockCount = blockCount + 1;
+                    tmpTrialSm(tti, ssI) =  blockCount;
+                elseif tmpTrialSm(tti, ssI - 1) == 0 || ssI == 1
                     blockCount = blockCount + 1;
                     tmpTrialSm(tti, ssI) =  blockCount;
                 else
                     tmpTrialSm(tti, ssI) =  tmpTrialSm(tti, ssI-1);
                 end
+
             end
         end
     end
@@ -161,10 +165,19 @@ for chI = 1:size(trialBandDat,3)
         uniBlocks = unique(tmpTrialFix(tmpTrialFix ~= 0));
         for uii = 1:length(uniBlocks)
 
+            try
             blockIndex = find(tmpTrialFix == uniBlocks(uii));
+            if blockIndex(1) <= 2
+                blockIndex(1) = 3;
+            elseif blockIndex(end) >= size(tmpChannel,2) - 1
+                blockIndex(end) = size(tmpChannel,2) - 2;
+            end
             fillmean = mean([curTrial(blockIndex(1)-2:blockIndex(1)-1) ,...
                 curTrial(blockIndex(end)+1:blockIndex(end)+2)]);
             tmpChannFix(tti,blockIndex) = fillmean;
+            catch 
+                keyboard
+            end
         end
     end
 

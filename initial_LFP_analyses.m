@@ -380,12 +380,27 @@ ylabel('Percent difference from baseline')
 
 
 %% spectro analysis
-behDIR = 'D:\LossAversion\Patient folders\CLASE007\Behavioral-data';
-ephysDIR = 'D:\LossAversion\Patient folders\CLASE007\NeuroPhys_Processed';
+
+curname = getenv('COMPUTERNAME');
+
+switch curname
+    case 'DESKTOP-FAGRV5G' % home pc
+
+        behDIR = 'D:\LossAversion\Patient folders\CLASE007\Behavioral-data';
+        ephysDIR = 'D:\LossAversion\Patient folders\CLASE007\NeuroPhys_Processed';
+
+    case 'DESKTOP-I5CPDO7' % work pc
+
+        behDIR = 'E:\LossAversionPipeTest\CLASE007\Behavioral-data';
+        ephysDIR = 'E:\LossAversionPipeTest\CLASE007\NeuroPhys_Processed';
+
+end
+
+
 
 wire = 7;
 channS = 67:72;
-
+dbstop if error
 spectroPLOT_LA_v1(behDIR , ephysDIR, wire, channS)
 
 
