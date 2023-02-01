@@ -62,8 +62,13 @@ trial2use = behPrep.gainLOSS;
 lfpListTrial = lfpListsort(trial2use);
 newTriallst = newTrialSort(trial2use);
 
-% For each trial - z-score by baseline period
+% need to determine time and contact ahead of time
+tempSpecTm = specTime{newTriallst(1)};
+tempOnsets = outDATA.timeData.timeIndsRel(:,newTriallst(1));
+[sampleNum] = getSampConN(tempSpecTm , tempOnsets);
 
+% trial x time x contact
+trialBandDat = nan(height(newTriallst), sampleNum , sum(channLOGv3));
 for li = 1:length(lfpListTrial)
 
     load(lfpListTrial{li},'trialSpecTro');
@@ -82,25 +87,111 @@ for li = 1:length(lfpListTrial)
     timeONinsecs = timeOnSets/500;
 
     start2endE = specTimeT < timeONinsecs(3);
+    baseLINE = specTimeT < timeONinsecs(2);
 
     trialChansLBtm = trialChansLB(:,start2endE,:);
 
-    test = 1;
+    for conI = 1:size(trialChansLBtm,3)
+
+        tmpContact = trialChansLBtm(:,:,conI);
+
+        if length(tmpContact) > 406
+            tmpContact = tmpContact(:,1:406);
+        end
+
+        singleTrialVec = mean(tmpContact);
+
+        % (all values - mean of baseline) / std of baseline
+        zscoreDtrial = (singleTrialVec - mean(singleTrialVec(baseLINE))) /...
+            std(singleTrialVec(baseLINE));
+
+        trialBandDat(li,:,conI) = zscoreDtrial;
+
+    end
+
+    disp(['Trial ' , num2str(li), ' out of ' , num2str(length(lfpListTrial)),  ' Done!'])
     
-
-%     meanLB = transpose(mean(squeeze(mean(trialChansLB)),2));
-%     meanLB = squeeze(mean(trialChansLB))
-
     % Add to multi dimension
 
     % Compute Average of trials
-
-
+    
+    % For each trial - z-score by baseline period
 
 
 end
 
 
+
+
+
+
+
+
+
+
+for chI = 1:size(trialBandDat,3)
+
+    tmpChannel = trialBandDat(:,:,chI);
+
+    tmpTrialSm = zeros(size(tmpChannel));
+
+    for tti = 1:size(tmpChannel,1)
+        blockCount = 0;
+        tmpTrial = tmpChannel(tti,:);
+        
+        for ssI = 1:length(tmpTrial)
+
+            if tmpTrial(ssI) > 4 || tmpTrial(ssI) < -4
+
+                if tmpTrialSm(tti, ssI - 1) == 0
+                    blockCount = blockCount + 1;
+                    tmpTrialSm(tti, ssI) =  blockCount;
+                else
+                    tmpTrialSm(tti, ssI) =  tmpTrialSm(tti, ssI-1);
+                end
+            end
+        end
+    end
+
+    tmpChannFix = tmpChannel;
+    % Loop through trials and interpolate (fill with mean)
+    for tti = 1:size(tmpChannel,1)
+        tmpTrialFix = tmpTrialSm(tti,:);
+        curTrial = tmpChannel(tti,:);
+        uniBlocks = unique(tmpTrialFix(tmpTrialFix ~= 0));
+        for uii = 1:length(uniBlocks)
+
+            blockIndex = find(tmpTrialFix == uniBlocks(uii));
+            fillmean = mean([curTrial(blockIndex(1)-2:blockIndex(1)-1) ,...
+                curTrial(blockIndex(end)+1:blockIndex(end)+2)]);
+            tmpChannFix(tti,blockIndex) = fillmean;
+        end
+    end
+
+    % Smooth data
+    tmpChannFixSM = tmpChannFix;
+    for tcS = 1:size(tmpChannFixSM,1)
+
+        tmpTrialsm = tmpChannFix(tcS,:);
+        tmpTrialsm2 = smoothdata(tmpTrialsm,'sgolay',35);
+        tmpChannFixSM(tcS,:) = tmpTrialsm2;
+
+    end
+
+    figure;
+    imagesc(tmpChannFixSM)
+    colorbar
+    xline(70,'k')
+    figure; 
+    plot(mean(tmpChannFixSM))
+    xlim([0 406])
+    xline(70,'k')
+    pause
+
+
+
+
+end
 
 
 
@@ -176,5 +267,18 @@ ttr.outNEUTRAL = outcomeNeutral;
 ttr.outGAIN = outcomeGain;
 
 behPrep = ttr;
+
+end
+
+
+
+
+function [sampleNum] = getSampConN(tempSpec , tmpTime)
+
+timeONinsecs = tmpTime/500;
+
+start2endE = tempSpec < timeONinsecs(3);
+
+sampleNum = sum(start2endE);
 
 end
