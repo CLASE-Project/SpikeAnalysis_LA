@@ -1,4 +1,4 @@
-function [] = spectroPLOT_LA_v1(behDIR , ephysDIR, wire, channS)
+function [tmpChannFixSM] = spectroPLOT_LA_v3(behDIR , ephysDIR, wire, channS, bandBlk , epochBlk)
 %UNTITLED3 Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -36,7 +36,6 @@ for ui = 1:height(outDATA.recHeader) - 1
         num2str(outDATA.recHeader.Chanl(ui+1))];
 end
 
-
 channLOGv = ismember(outDATA.recHeader.WireID,wire) & ismember(outDATA.recHeader.Chanl, channS); 
 channLOGv2 = false(size(channLOGv));
 channLOGv2(find(channLOGv)+1) = true;
@@ -44,7 +43,6 @@ chanIDtab = outDATA.recHeader(channLOGv2,:);
 channLOGv3 = channLOGv(1:end-1);
 bipolUSED = bipolall(channLOGv3);
 chanIDtab.bipolID = bipolUSED;
-
 
 specTime = outDATA.Spec.T;
 specFreq = outDATA.Spec.F;
@@ -65,7 +63,7 @@ newTriallst = newTrialSort(trial2use);
 % need to determine time and contact ahead of time
 tempSpecTm = specTime{newTriallst(1)};
 tempOnsets = outDATA.timeData.timeIndsRel(:,newTriallst(1));
-[sampleNum] = getSampConN(tempSpecTm , tempOnsets);
+[sampleNum] = getSampConN(tempSpecTm , tempOnsets , epochBlk);
 
 % trial x time x contact
 trialBandDat = nan(height(newTriallst), sampleNum , sum(channLOGv3));
@@ -79,31 +77,40 @@ for li = 1:length(lfpListTrial)
     specFreqT = specFreq{newTriallst(li)};
     specTimeT = specTime{newTriallst(li)};
 
-    lowBetai = specFreqT > 13 & specFreqT < 22;
+    lowBetai = specFreqT > bandBlk(1) & specFreqT < bandBlk(2);
 
     trialChansLB = trialChans(lowBetai,:,:);
 
     timeOnSets = outDATA.timeData.timeIndsRel(:,newTriallst(li));
     timeONinsecs = timeOnSets/500;
 
-    start2endE = specTimeT < timeONinsecs(3);
-    baseLINE = specTimeT < timeONinsecs(2);
+    switch epochBlk
+        case 1
+            start2endE = specTimeT < timeONinsecs(3); % 3 for eval
+        case 2
+            start2endE = specTimeT > timeONinsecs(5) & specTimeT < timeONinsecs(5) + 0.75; % 3 for eval
+    end
 
+    baseLINE = specTimeT < timeONinsecs(2);   % 2 for eval
+
+    baseLINEtr = trialChansLB(:,baseLINE,:);
     trialChansLBtm = trialChansLB(:,start2endE,:);
 
     for conI = 1:size(trialChansLBtm,3)
 
         tmpContact = trialChansLBtm(:,:,conI);
+        tmpBaseline = baseLINEtr(:,:,conI);
 
-        if length(tmpContact) > 406
-            tmpContact = tmpContact(:,1:406);
+        if length(tmpContact) > sampleNum
+            tmpContact = tmpContact(:,1:sampleNum);
         end
 
         singleTrialVec = mean(tmpContact);
+        singleBaseVec = mean(tmpBaseline);
 
         % (all values - mean of baseline) / std of baseline
-        zscoreDtrial = (singleTrialVec - mean(singleTrialVec(baseLINE))) /...
-            std(singleTrialVec(baseLINE));
+        zscoreDtrial = (singleTrialVec - mean(singleBaseVec)) /...
+            std(singleBaseVec);
 
         trialBandDat(li,:,conI) = zscoreDtrial;
 
@@ -120,44 +127,45 @@ for li = 1:length(lfpListTrial)
 
 end
 
+trialBandD2use = 3;
 
-for chI = 1:size(trialBandDat,3)
+chI = trialBandD2use;
 
-    tmpChannel = trialBandDat(:,:,chI);
+tmpChannel = trialBandDat(:,:,chI);
 
-    tmpTrialSm = zeros(size(tmpChannel));
+tmpTrialSm = zeros(size(tmpChannel));
 
-    for tti = 1:size(tmpChannel,1)
-        blockCount = 0;
-        tmpTrial = tmpChannel(tti,:);
+for tti = 1:size(tmpChannel,1)
+    blockCount = 0;
+    tmpTrial = tmpChannel(tti,:);
 
-        for ssI = 1:length(tmpTrial)
+    for ssI = 1:length(tmpTrial)
 
-            if tmpTrial(ssI) > 4 || tmpTrial(ssI) < -4
+        if tmpTrial(ssI) > 4 || tmpTrial(ssI) < -4
 
-                if ssI == 1
-                    blockCount = blockCount + 1;
-                    tmpTrialSm(tti, ssI) =  blockCount;
-                elseif tmpTrialSm(tti, ssI - 1) == 0 || ssI == 1
-                    blockCount = blockCount + 1;
-                    tmpTrialSm(tti, ssI) =  blockCount;
-                else
-                    tmpTrialSm(tti, ssI) =  tmpTrialSm(tti, ssI-1);
-                end
-
+            if ssI == 1
+                blockCount = blockCount + 1;
+                tmpTrialSm(tti, ssI) =  blockCount;
+            elseif tmpTrialSm(tti, ssI - 1) == 0 || ssI == 1
+                blockCount = blockCount + 1;
+                tmpTrialSm(tti, ssI) =  blockCount;
+            else
+                tmpTrialSm(tti, ssI) =  tmpTrialSm(tti, ssI-1);
             end
+
         end
     end
+end
 
-    tmpChannFix = tmpChannel;
-    % Loop through trials and interpolate (fill with mean)
-    for tti = 1:size(tmpChannel,1)
-        tmpTrialFix = tmpTrialSm(tti,:);
-        curTrial = tmpChannel(tti,:);
-        uniBlocks = unique(tmpTrialFix(tmpTrialFix ~= 0));
-        for uii = 1:length(uniBlocks)
+tmpChannFix = tmpChannel;
+% Loop through trials and interpolate (fill with mean)
+for tti = 1:size(tmpChannel,1)
+    tmpTrialFix = tmpTrialSm(tti,:);
+    curTrial = tmpChannel(tti,:);
+    uniBlocks = unique(tmpTrialFix(tmpTrialFix ~= 0));
+    for uii = 1:length(uniBlocks)
 
-            try
+        try
             blockIndex = find(tmpTrialFix == uniBlocks(uii));
             if blockIndex(1) <= 2
                 blockIndex(1) = 3;
@@ -167,36 +175,51 @@ for chI = 1:size(trialBandDat,3)
             fillmean = mean([curTrial(blockIndex(1)-2:blockIndex(1)-1) ,...
                 curTrial(blockIndex(end)+1:blockIndex(end)+2)]);
             tmpChannFix(tti,blockIndex) = fillmean;
-            catch 
-                keyboard
-            end
+        catch
+            keyboard
         end
     end
+end
 
-    % Smooth data
-    tmpChannFixSM = tmpChannFix;
-    for tcS = 1:size(tmpChannFixSM,1)
+% Smooth data
+tmpChannFixSM = tmpChannFix;
+for tcS = 1:size(tmpChannFixSM,1)
 
-        tmpTrialsm = tmpChannFix(tcS,:);
-        tmpTrialsm2 = smoothdata(tmpTrialsm,'sgolay',35);
-        tmpChannFixSM(tcS,:) = tmpTrialsm2;
+    tmpTrialsm = tmpChannFix(tcS,:);
+    tmpTrialsm2 = smoothdata(tmpTrialsm,'sgolay',35);
+    tmpChannFixSM(tcS,:) = tmpTrialsm2;
 
-    end
+end
 
-    figure;
-    imagesc(tmpChannFixSM)
-    colorbar
-    xline(70,'k')
-    figure; 
-    plot(mean(tmpChannFixSM))
-    xlim([0 406])
-    xline(70,'k')
-    pause
+switch epochBlk
+    case 1
+        figure;
+        imagesc(tmpChannFixSM)
+        colorbar
+        xline(70,'k')
+        figure;
+        plot(mean(tmpChannFixSM))
+        xlim([0 406])
+        xline(70,'k')
+        yline(0,'--')
+        ylabel('Average z-score change from baseline')
 
-
+    case 2
+        figure;
+        imagesc(tmpChannFixSM)
+        colorbar
+        figure;
+        plot(mean(tmpChannFixSM))
+        xlim([0 125])
+        yline(0,'--')
+        ylabel('Average z-score change from baseline')
 
 
 end
+
+
+
+
 
 
 
@@ -278,11 +301,19 @@ end
 
 
 
-function [sampleNum] = getSampConN(tempSpec , tmpTime)
+function [sampleNum] = getSampConN(tempSpec , tmpTime, epochblk)
 
 timeONinsecs = tmpTime/500;
 
-start2endE = tempSpec < timeONinsecs(3);
+switch epochblk
+    case 1
+
+        start2endE = tempSpec < timeONinsecs(3);
+
+    case 2
+        start2endE = tempSpec > timeONinsecs(5) & tempSpec < timeONinsecs(5) + 0.75;
+
+end
 
 sampleNum = sum(start2endE);
 

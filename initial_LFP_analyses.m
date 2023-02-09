@@ -232,7 +232,7 @@ titLE = 'Putative amy contacts';
 
 
 % seegLA_beh_AVEpowerBASE_v2(behDIR , ephysDIR, bandOfInt , epoch1, epoch2, wire, channS)
-seegLA_beh_AVEpowerBASE_summary_v2(behDIR , ephysDIR, bandOfInt , epoch1, epoch2, wire, channS, titLE)
+seegLA_beh_AVEpowerBASE_summary_v3(behDIR , ephysDIR, bandOfInt , epoch1, epoch2, wire, channS, titLE)
 
 %% CLASE 019
 
@@ -400,7 +400,7 @@ end
 
 wire = 7;
 channS = 67:72;
-dbstop if error
+% HARD coded to low beta and pre trial 0.5s to end of evaluation
 spectroPLOT_LA_v1(behDIR , ephysDIR, wire, channS)
 
 

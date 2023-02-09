@@ -1,4 +1,4 @@
-function [] = spectroPLOT_LA_v1(behDIR , ephysDIR, wire, channS)
+function [] = spectroPLOT_LA_v2(behDIR , ephysDIR, wire, channS)
 %UNTITLED3 Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -120,44 +120,45 @@ for li = 1:length(lfpListTrial)
 
 end
 
+trialBandD2use = 3;
 
-for chI = 1:size(trialBandDat,3)
+chI = trialBandD2use;
 
-    tmpChannel = trialBandDat(:,:,chI);
+tmpChannel = trialBandDat(:,:,chI);
 
-    tmpTrialSm = zeros(size(tmpChannel));
+tmpTrialSm = zeros(size(tmpChannel));
 
-    for tti = 1:size(tmpChannel,1)
-        blockCount = 0;
-        tmpTrial = tmpChannel(tti,:);
+for tti = 1:size(tmpChannel,1)
+    blockCount = 0;
+    tmpTrial = tmpChannel(tti,:);
 
-        for ssI = 1:length(tmpTrial)
+    for ssI = 1:length(tmpTrial)
 
-            if tmpTrial(ssI) > 4 || tmpTrial(ssI) < -4
+        if tmpTrial(ssI) > 4 || tmpTrial(ssI) < -4
 
-                if ssI == 1
-                    blockCount = blockCount + 1;
-                    tmpTrialSm(tti, ssI) =  blockCount;
-                elseif tmpTrialSm(tti, ssI - 1) == 0 || ssI == 1
-                    blockCount = blockCount + 1;
-                    tmpTrialSm(tti, ssI) =  blockCount;
-                else
-                    tmpTrialSm(tti, ssI) =  tmpTrialSm(tti, ssI-1);
-                end
-
+            if ssI == 1
+                blockCount = blockCount + 1;
+                tmpTrialSm(tti, ssI) =  blockCount;
+            elseif tmpTrialSm(tti, ssI - 1) == 0 || ssI == 1
+                blockCount = blockCount + 1;
+                tmpTrialSm(tti, ssI) =  blockCount;
+            else
+                tmpTrialSm(tti, ssI) =  tmpTrialSm(tti, ssI-1);
             end
+
         end
     end
+end
 
-    tmpChannFix = tmpChannel;
-    % Loop through trials and interpolate (fill with mean)
-    for tti = 1:size(tmpChannel,1)
-        tmpTrialFix = tmpTrialSm(tti,:);
-        curTrial = tmpChannel(tti,:);
-        uniBlocks = unique(tmpTrialFix(tmpTrialFix ~= 0));
-        for uii = 1:length(uniBlocks)
+tmpChannFix = tmpChannel;
+% Loop through trials and interpolate (fill with mean)
+for tti = 1:size(tmpChannel,1)
+    tmpTrialFix = tmpTrialSm(tti,:);
+    curTrial = tmpChannel(tti,:);
+    uniBlocks = unique(tmpTrialFix(tmpTrialFix ~= 0));
+    for uii = 1:length(uniBlocks)
 
-            try
+        try
             blockIndex = find(tmpTrialFix == uniBlocks(uii));
             if blockIndex(1) <= 2
                 blockIndex(1) = 3;
@@ -167,36 +168,36 @@ for chI = 1:size(trialBandDat,3)
             fillmean = mean([curTrial(blockIndex(1)-2:blockIndex(1)-1) ,...
                 curTrial(blockIndex(end)+1:blockIndex(end)+2)]);
             tmpChannFix(tti,blockIndex) = fillmean;
-            catch 
-                keyboard
-            end
+        catch
+            keyboard
         end
     end
+end
 
-    % Smooth data
-    tmpChannFixSM = tmpChannFix;
-    for tcS = 1:size(tmpChannFixSM,1)
+% Smooth data
+tmpChannFixSM = tmpChannFix;
+for tcS = 1:size(tmpChannFixSM,1)
 
-        tmpTrialsm = tmpChannFix(tcS,:);
-        tmpTrialsm2 = smoothdata(tmpTrialsm,'sgolay',35);
-        tmpChannFixSM(tcS,:) = tmpTrialsm2;
-
-    end
-
-    figure;
-    imagesc(tmpChannFixSM)
-    colorbar
-    xline(70,'k')
-    figure; 
-    plot(mean(tmpChannFixSM))
-    xlim([0 406])
-    xline(70,'k')
-    pause
-
-
-
+    tmpTrialsm = tmpChannFix(tcS,:);
+    tmpTrialsm2 = smoothdata(tmpTrialsm,'sgolay',35);
+    tmpChannFixSM(tcS,:) = tmpTrialsm2;
 
 end
+
+figure;
+imagesc(tmpChannFixSM)
+colorbar
+xline(70,'k')
+figure;
+plot(mean(tmpChannFixSM))
+xlim([0 406])
+xline(70,'k')
+yline(0,'--')
+ylabel('Average z-score change from baseline')
+
+
+
+
 
 
 
