@@ -1,6 +1,22 @@
+%% CLASE007
+
+behDIR = 'D:\LossAversion\Patient folders\CLASE007\Behavioral-data';
+ephysDIR = 'D:\LossAversion\Patient folders\CLASE007\NeuroPhys_Processed';
+bandOfInt = 4;
+epoch1 = 2;
+epoch2 = 5;
+wire = 7;
+channS = 67:72;
+titLE = 'Putative amy contacts';
+
+% Add channel number and wire number
+
+
+% seegLA_beh_AVEpower(behDIR , ephysDIR, bandOfInt , epoch1, epoch2)
+seegLA_beh_AVEpowerBASE_summary_v3(behDIR , ephysDIR, bandOfInt , epoch1, epoch2, wire, channS, titLE)
+
 %% Rep plot 
 % CLASE 018
-
 close all
 behDIR = 'D:\LossAversion\Patient folders\CLASE018\Behavioral-data';
 ephysDIR = 'D:\LossAversion\Patient folders\CLASE018\NeuroPhys_Processed';
@@ -53,15 +69,15 @@ for plotSi = 1:5
     e2point = allpatsPc{plotSi}.E2;
     hold on
     if allpatsSt{plotSi}.E1 < 0.5
-        scatter(1, e1point , 50,[0 0.4470 0.7410],'filled')
+        scatter(1, e1point , 80,[0 0.4470 0.7410],'filled')
     else
-        scatter(1, e1point , 50,[0 0.4470 0.7410])
+        scatter(1, e1point , 80,[0 0.4470 0.7410])
     end
 
     if allpatsSt{plotSi}.E2 < 0.5
-        scatter(2, e2point , 50,[0.8500 0.3250 0.0980],'filled')
+        scatter(2, e2point , 80,[0.8500 0.3250 0.0980],'filled')
     else
-        scatter(2, e2point , 50,[0.8500 0.3250 0.0980])
+        scatter(2, e2point , 80,[0.8500 0.3250 0.0980])
     end
 
 end
@@ -71,7 +87,7 @@ xticks([1 2])
 xticklabels({'Evaluation','Outcome'})
 ylabel('Percent difference from baseline')
 yline(0,'--')
-
+axis square
 
 
 %%
@@ -188,13 +204,22 @@ bE = [4 , 8 , 13 , 22 , 31 , 50 , 125];
 
 epochBlk = 2;
 
-allBandS = cell(1,7);
-for bi = 1:length(bS)
-    bandblk = [bS(bi) bE(bi)];
-    allBandS{bi} = spectroPLOT_LA_v3(behDIR , ephysDIR, wire, channS, bandblk, epochBlk);
-end
-save('LA_evaluation_LFP.mat','allBandS')
+% allBandS = cell(1,7);
+% for bi = 1:length(bS)
+%     bandblk = [bS(bi) bE(bi)];
+%     allBandS{bi} = spectroPLOT_LA_v3(behDIR , ephysDIR, wire, channS, bandblk, epochBlk);
+% end
+
+
+
+
+spectroPLOT_LA_v3(behDIR , ephysDIR, wire, channS, bandblk, epochBlk);
+
+
+% save('LA_evaluation_LFP.mat','allBandS')
 %%
+close all
+cd('D:\LossAversion\FigureData_LA')
 load('LA_outcome_LFP.mat','allBandS')
 for bpi = 1:7
 

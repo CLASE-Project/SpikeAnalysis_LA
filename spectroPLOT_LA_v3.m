@@ -205,14 +205,33 @@ switch epochBlk
         ylabel('Average z-score change from baseline')
 
     case 2
+
+
+        time2plot = specTimeT(start2endE);
+
+        % Reset around onset of choice
+        time2plott = time2plot - time2plot(1);
+
+        [~,point2five] = min(abs(time2plott - 0.25));
+
+        [~,pointfive] = min(abs(time2plott - 0.5));
+
+        xtick2use = [1 , point2five, pointfive ,length(time2plott)];
+
         figure;
         imagesc(tmpChannFixSM)
+        xticks(xtick2use)
+        xticklabels([0 0.25 0.5 0.75])
         colorbar
+        axis square
         figure;
         plot(mean(tmpChannFixSM))
+        xticks(xtick2use)
+        xticklabels([0 0.25 0.5 0.75])
         xlim([0 125])
         yline(0,'--')
         ylabel('Average z-score change from baseline')
+        axis square
 
 
 end

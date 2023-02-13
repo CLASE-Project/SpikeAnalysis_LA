@@ -184,17 +184,40 @@ for tcS = 1:size(tmpChannFixSM,1)
 
 end
 
+time2plot = specTimeT(1:406);
+
+% Reset around onset of choice
+[~,a2] = min(abs(time2plot - 0.5));
+
+time2plot2 = time2plot;
+time2plot2(1:a2) = time2plot2(1:a2) - 0.5;
+time2plot2(a2) = 0;
+time2plot2(a2+1:end) = time2plot2(a2+1:end) - 0.5;
+
+[~,pointfive] = min(abs(time2plot2 - 0.5));
+[~,onesec] = min(abs(time2plot2 - 1));
+[~,onepfivsec] = min(abs(time2plot2 - 1.5));
+
+xtick2use = [1 , a2 , pointfive , onesec , onepfivsec];
+
 figure;
 imagesc(tmpChannFixSM)
 colorbar
-xline(70,'k')
+xline(a2,'k')
+% curXticks = xticks;
+% plotXtickDat = time2plot2(curXticks);
+xticks(xtick2use)
+xticklabels([0.5 0 0.5 1 1.5])
+axis square
 figure;
 plot(mean(tmpChannFixSM))
 xlim([0 406])
-xline(70,'k')
+xline(a2,'k')
 yline(0,'--')
+xticks(xtick2use)
+xticklabels([0.5 0 0.5 1 1.5])
 ylabel('Average z-score change from baseline')
-
+axis square
 
 
 

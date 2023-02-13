@@ -1,4 +1,4 @@
-function [] = seegLA_beh_AVEpowerBASE_summary_v2(behDIR , ephysDIR, bandOfInt , epoch1, epoch2, wire, channS, titLE)
+function [] = seegLA_beh_AVEpowerBASE_summary_v3(behDIR , ephysDIR, bandOfInt , epoch1, epoch2, wire, channS, titLE)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -60,16 +60,20 @@ for ggi = 1:2
 
     xAXes1 = ones(numel(baselineV),1);
     hold on
-    swarmchart(xAXes1  ,log10(baselineV),20,[0 0.4470 0.7410],'filled','XJitterWidth',0.2)
-    boxchart(xAXes1 , log10(baselineV),'BoxFaceColor',[0 0.4470 0.7410],'MarkerStyle','none')
 
+    % [0.9290 0.6940 0.1250] yellow
+    swarmchart(xAXes1  ,log10(baselineV),20,[0.9290 0.6940 0.1250],'filled','XJitterWidth',0.2)
+    boxchart(xAXes1 , log10(baselineV),'BoxFaceColor',[0.9290 0.6940 0.1250],'MarkerStyle','none')
+
+    % [0 0.4470 0.7410] blue
     xAXes2 = ones(numel(trials_E1),1)*2;
-    swarmchart(xAXes2, log10(trials_E1),20,[0.8500 0.3250 0.0980],'filled','XJitterWidth',0.2)
-    boxchart(xAXes2 , log10(trials_E1),'BoxFaceColor',[0.8500 0.3250 0.0980],'MarkerStyle','none')
+    swarmchart(xAXes2, log10(trials_E1),20,[0 0.4470 0.7410],'filled','XJitterWidth',0.2)
+    boxchart(xAXes2 , log10(trials_E1),'BoxFaceColor',[0 0.4470 0.7410],'MarkerStyle','none')
 
+    % [0.8500 0.3250 0.0980] red
     xAXes3 = ones(numel(trials_E2),1)*3;
-    swarmchart(xAXes3,log10(trials_E2),20,[0.9290 0.6940 0.1250],'filled','XJitterWidth',0.2)
-    boxchart(xAXes3 , log10(trials_E2),'BoxFaceColor',[0.9290 0.6940 0.1250],'MarkerStyle','none')
+    swarmchart(xAXes3,log10(trials_E2),20,[0.8500 0.3250 0.0980],'filled','XJitterWidth',0.2)
+    boxchart(xAXes3 , log10(trials_E2),'BoxFaceColor',[0.8500 0.3250 0.0980],'MarkerStyle','none')
     hold off
 
     alldata = [baselineV ; trials_E2 ; trials_E1];
