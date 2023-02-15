@@ -1,4 +1,4 @@
-function [] = seegLA_beh_AVEpowerBASE_summary_v3(behDIR , ephysDIR, bandOfInt , epoch1, epoch2, wire, channS, titLE)
+function [] = seegLA_beh_AVEpowerBASE_summary_v3(behDIR , ephysDIR, bandOfInt , epoch1, epoch2, wire, channS, titLE, yLLIM)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -112,7 +112,7 @@ for ggi = 1:2
     end
 
     %         yticks([0 0.5 1])
-    %     ylim([0 5])
+    ylim(yLLIM)
     ylabel('Log average LFP power')
     xticks([1 2 3])
     xticklabels({'Baseline','Evaluation','Outcome'})
@@ -123,6 +123,8 @@ for ggi = 1:2
         case 2
             title([titLE , ' GainOnly'])
     end
+
+    axis square
 
 end
 

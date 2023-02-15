@@ -67,6 +67,7 @@ tempOnsets = outDATA.timeData.timeIndsRel(:,newTriallst(1));
 
 % trial x time x contact
 trialBandDat = nan(height(newTriallst), sampleNum , sum(channLOGv3));
+baselineONLYz = nan(height(newTriallst), 75 , sum(channLOGv3));
 for li = 1:length(lfpListTrial)
 
     load(lfpListTrial{li},'trialSpecTro');
@@ -114,6 +115,9 @@ for li = 1:length(lfpListTrial)
 
         trialBandDat(li,:,conI) = zscoreDtrial;
 
+        baselineONLYz(li,:,conI) = (singleBaseVec(1:75) - mean(singleBaseVec)) /...
+            std(singleBaseVec);
+
     end
 
     disp(['Trial ' , num2str(li), ' out of ' , num2str(length(lfpListTrial)),  ' Done!'])
@@ -132,6 +136,7 @@ trialBandD2use = 3;
 chI = trialBandD2use;
 
 tmpChannel = trialBandDat(:,:,chI);
+tmpChannelBase = baselineONLYz(:,:,chI);
 
 tmpTrialSm = zeros(size(tmpChannel));
 
@@ -218,6 +223,19 @@ switch epochBlk
 
         xtick2use = [1 , point2five, pointfive ,length(time2plott)];
 
+        baseLINEmean = mean(tmpChannelBase,2);
+        tvals = nan(1,width(tmpChannFixSM));
+        pvals = nan(1,width(tmpChannFixSM));
+        for fi = 1:width(tmpChannFixSM)
+
+            tmpBin = tmpChannFixSM(:,fi);
+
+            [~,tpVal,~,tstats] = ttest2(baseLINEmean,tmpBin);
+            pvals(fi) = tpVal;
+            tvals(fi) = tstats.tstat;
+
+        end
+
         figure;
         imagesc(tmpChannFixSM)
         xticks(xtick2use)
@@ -227,6 +245,20 @@ switch epochBlk
         figure;
         plot(mean(tmpChannFixSM))
         xticks(xtick2use)
+
+        hold on
+
+        pvalsX = find(pvals < 0.05);
+        meanDATA = mean(tmpChannFixSM);
+        pvalsY = meanDATA(pvals < 0.05);
+
+        for li = 1:length(pvalsY)
+
+            line([pvalsX(li) pvalsX(li)],[0 pvalsY(li)],'Color','r')
+
+        end
+
+
         xticklabels([0 0.25 0.5 0.75])
         xlim([0 125])
         yline(0,'--')

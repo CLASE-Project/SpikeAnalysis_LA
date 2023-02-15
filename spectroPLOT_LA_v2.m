@@ -1,4 +1,4 @@
-function [] = spectroPLOT_LA_v2(behDIR , ephysDIR, wire, channS)
+function [] = spectroPLOT_LA_v2(behDIR , ephysDIR, wire, channS, bandBLK)
 %UNTITLED3 Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -79,7 +79,7 @@ for li = 1:length(lfpListTrial)
     specFreqT = specFreq{newTriallst(li)};
     specTimeT = specTime{newTriallst(li)};
 
-    lowBetai = specFreqT > 13 & specFreqT < 22;
+    lowBetai = specFreqT > bandBLK(1) & specFreqT < bandBLK(2);
 
     trialChansLB = trialChans(lowBetai,:,:);
 
@@ -200,6 +200,25 @@ time2plot2(a2+1:end) = time2plot2(a2+1:end) - 0.5;
 
 xtick2use = [1 , a2 , pointfive , onesec , onepfivsec];
 
+% stats
+
+baseLINEmean = mean(tmpChannFixSM(:,1:a2),2);
+tvals = nan(1,length(a2 + 1:width(tmpChannFixSM)));
+pvals = nan(1,length(a2 + 1:width(tmpChannFixSM)));
+for fi = a2 + 1:width(tmpChannFixSM)
+
+    tmpBin = tmpChannFixSM(:,fi);
+
+    [~,tpVal,~,tstats] = ttest2(baseLINEmean,tmpBin);
+    pvals(fi) = tpVal;
+    tvals(fi) = tstats.tstat;
+
+end
+
+
+
+
+
 figure;
 imagesc(tmpChannFixSM)
 colorbar
@@ -215,6 +234,18 @@ xlim([0 406])
 xline(a2,'k')
 yline(0,'--')
 xticks(xtick2use)
+hold on
+
+pvalsX = find(pvals < 0.05); 
+meanDATA = mean(tmpChannFixSM);
+pvalsY = meanDATA(pvals < 0.05);
+
+for li = 1:length(pvalsY)
+
+    line([pvalsX(li) pvalsX(li)],[0 pvalsY(li)],'Color','r')
+
+end
+
 xticklabels([0.5 0 0.5 1 1.5])
 ylabel('Average z-score change from baseline')
 axis square

@@ -2,7 +2,7 @@
 
 behDIR = 'D:\LossAversion\Patient folders\CLASE007\Behavioral-data';
 ephysDIR = 'D:\LossAversion\Patient folders\CLASE007\NeuroPhys_Processed';
-bandOfInt = 4;
+bandOfInt = 1; % delta = 1
 epoch1 = 2;
 epoch2 = 5;
 wire = 7;
@@ -13,14 +13,15 @@ titLE = 'Putative amy contacts';
 
 
 % seegLA_beh_AVEpower(behDIR , ephysDIR, bandOfInt , epoch1, epoch2)
-seegLA_beh_AVEpowerBASE_summary_v3(behDIR , ephysDIR, bandOfInt , epoch1, epoch2, wire, channS, titLE)
+seegLA_beh_AVEpowerBASE_summary_v3(behDIR , ephysDIR, bandOfInt , epoch1, epoch2, wire, channS, titLE,[3.25 7])
+
 
 %% Rep plot 
 % CLASE 018
 close all
 behDIR = 'D:\LossAversion\Patient folders\CLASE018\Behavioral-data';
 ephysDIR = 'D:\LossAversion\Patient folders\CLASE018\NeuroPhys_Processed';
-bandOfInt = 4;
+bandOfInt = 1;
 epoch1 = 2;
 epoch2 = 5;
 wire = 2; % 
@@ -31,7 +32,8 @@ titLE = 'Putative amy contacts';
 
 
 % seegLA_beh_AVEpowerBASE_v2(behDIR , ephysDIR, bandOfInt , epoch1, epoch2, wire, channS)
-seegLA_beh_AVEpowerBASE_summary_v3(behDIR , ephysDIR, bandOfInt , epoch1, epoch2, wire, channS, titLE)
+seegLA_beh_AVEpowerBASE_summary_v3(behDIR , ephysDIR, bandOfInt , epoch1, epoch2, wire, channS, titLE,[3.25 7])
+
 
 %% All plot
 
@@ -46,7 +48,7 @@ ephysDIRs = {'D:\LossAversion\Patient folders\CLASE007\NeuroPhys_Processed',...
            'D:\LossAversion\Patient folders\CLASE009\NeuroPhys_Processed',...
            'D:\LossAversion\Patient folders\CLASE018\NeuroPhys_Processed',...
            'D:\LossAversion\Patient folders\CLASE019\NeuroPhys_Processed'};
-bandOfInt = 4;
+bandOfInt = 1; % DELTA
 epoch1 = 2;
 epoch2 = 5;
 wireSS = [7 , 11 , 1 , 2 , 3];
@@ -87,6 +89,8 @@ xticks([1 2])
 xticklabels({'Evaluation','Outcome'})
 ylabel('Percent difference from baseline')
 yline(0,'--')
+ylim([-30 120])
+yticks([-30 0 30 60 90 120])
 axis square
 
 
@@ -103,7 +107,7 @@ ephysDIRs = {'D:\LossAversion\Patient folders\CLASE007\NeuroPhys_Processed',...
            'D:\LossAversion\Patient folders\CLASE009\NeuroPhys_Processed',...
            'D:\LossAversion\Patient folders\CLASE018\NeuroPhys_Processed',...
            'D:\LossAversion\Patient folders\CLASE019\NeuroPhys_Processed'};
-bandOfInt = 4;
+bandOfInt = 1;
 epoch1 = 2;
 epoch2 = 5;
 wireSS = [7 , 11 , 1 , 2 , 3];
@@ -169,11 +173,11 @@ switch curname
 end
 
 
-
+bandblk = [1 4];
 wire = 7;
 channS = 67:72;
 % HARD coded to low beta and pre trial 0.5s to end of evaluation
-spectroPLOT_LA_v2(behDIR , ephysDIR, wire, channS)
+spectroPLOT_LA_v2(behDIR , ephysDIR, wire, channS ,bandblk)
 
 
 %%
@@ -197,7 +201,7 @@ end
 
 wire = 7;
 channS = 67:72;
-bandblk = [13 22];
+bandblk = [1 4];
 % HARD coded to low beta and pre trial 0.5s to end of evaluation
 bS = [1 , 4 , 8 , 13 , 22 , 31 , 50];
 bE = [4 , 8 , 13 , 22 , 31 , 50 , 125];
