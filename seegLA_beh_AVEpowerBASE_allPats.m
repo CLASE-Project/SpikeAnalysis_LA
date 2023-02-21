@@ -1,4 +1,4 @@
-function [statOUT , perCHANGE] = seegLA_beh_AVEpowerBASE_allPats(behDIR , ephysDIR, bandOfInt , epoch1, epoch2, wire, channS)
+function [statOUT , perCHANGEmd , perCHANGEmn , dataOUT] = seegLA_beh_AVEpowerBASE_allPats(behDIR , ephysDIR, bandOfInt , epoch1, epoch2, wire, channS)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -73,8 +73,14 @@ tbl.("GroupB") = gnames(tbl.("GroupB"));
 statOUT.E1 = tbl.("P-value")(1);
 statOUT.E2 = tbl.("P-value")(2);
 
-perCHANGE.E1 = ((median(trials_E1) - median(baselineV)) / median(baselineV))  * 100;
-perCHANGE.E2 = ((median(trials_E2) - median(baselineV)) / median(baselineV))  * 100;
+dataOUT.E1 = tbl.("Difference")(1);
+dataOUT.E2 = tbl.("Difference")(2);
+
+perCHANGEmd.E1 = ((median(trials_E1) - median(baselineV)) / median(baselineV))  * 100;
+perCHANGEmd.E2 = ((median(trials_E2) - median(baselineV)) / median(baselineV))  * 100;
+
+perCHANGEmn.E1 = ((mean(trials_E1) - mean(baselineV)) / mean(baselineV))  * 100;
+perCHANGEmn.E2 = ((mean(trials_E2) - mean(baselineV)) / mean(baselineV))  * 100;
 
 % if tbl.("P-value")(2) < 0.05
 %     text(3,pLOC2, num2str(round(tbl.("P-value")(2),5)),'Color',[1 0 0],'FontWeight','bold')

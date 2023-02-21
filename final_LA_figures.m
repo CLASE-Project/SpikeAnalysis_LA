@@ -52,34 +52,46 @@ bandOfInt = 1; % DELTA
 epoch1 = 2;
 epoch2 = 5;
 wireSS = [7 , 11 , 1 , 2 , 3];
-channSal = {67:72 , 120:125, 4:8 , 11:16, 26:30};
+% channSal = {67:72 , 120:125, 4:8 , 11:16, 26:30};
+channSal = {69:72 , 122:125, 5:8 , 13:16, 27:30};
 
-allpatsSt = cell(1,5);
-allpatsPc = cell(1,5);
+allpatspval = cell(1,5);
+allpatsPerCmd = cell(1,5);
+allpatsPerCmn = cell(1,5);
+allData = cell(1,5);
 for si = 1:length(channSal)
 
-    [allpatsSt{si} , allpatsPc{si}] = seegLA_beh_AVEpowerBASE_allPats(behDIRs{si} ,...
+    [allpatspval{si} , allpatsPerCmd{si} , allpatsPerCmn{si} , allData{si}] = seegLA_beh_AVEpowerBASE_allPats(behDIRs{si} ,...
         ephysDIRs{si}, bandOfInt , epoch1, epoch2, wireSS(si), channSal{si});
 
 end
+
+alldataI = zeros(5,2);
+for fiil = 1:5
+
+   alldataI(fiil,:)  = -1*struct2array(allData{fiil});
+
+end
+
+alldataIn = normalize(alldataI,'scale','mad');
 
 
 
 for plotSi = 1:5
 
-    e1point = allpatsPc{plotSi}.E1;
-    e2point = allpatsPc{plotSi}.E2;
+    e1point = alldataIn(plotSi,1);
+    e2point = alldataIn(plotSi,2);
     hold on
-    if allpatsSt{plotSi}.E1 < 0.5
-        scatter(1, e1point , 80,[0 0.4470 0.7410],'filled')
+    if allpatspval{plotSi}.E1 < 0.5
+        scatter(1, e1point , 120,[0 0.4470 0.7410],'filled')
     else
-        scatter(1, e1point , 80,[0 0.4470 0.7410])
+        scatter(1, e1point , 120,[0 0.4470 0.7410])
     end
 
-    if allpatsSt{plotSi}.E2 < 0.5
-        scatter(2, e2point , 80,[0.8500 0.3250 0.0980],'filled')
+    if allpatspval{plotSi}.E2 < 0.5
+        scatter(2, e2point , 120,[0.8500 0.3250 0.0980],'filled')
     else
-        scatter(2, e2point , 80,[0.8500 0.3250 0.0980])
+        scatter(2, e2point , 120,[0.8500 0.3250 0.0980])
     end
 
 end
@@ -87,10 +99,16 @@ end
 xlim([0.5 2.5])
 xticks([1 2])
 xticklabels({'Evaluation','Outcome'})
-ylabel('Percent difference from baseline')
+ylabel('Scaled difference between baseline and epoch')
 yline(0,'--')
-ylim([-30 120])
-yticks([-30 0 30 60 90 120])
+
+% if bandOfInt == 1
+    ylim([-2 10])
+    yticks([-2 0 2 4 6 8 10])
+% else
+%     ylim([-2 10])
+%     yticks([-2 0 2 4 6 8 10])
+% end
 axis square
 
 
@@ -114,12 +132,12 @@ wireSS = [7 , 11 , 1 , 2 , 3];
 channSal = {67:72 , 120:125, 4:8 , 11:16, 26:30};
 
 bandNs = {'d','t','a','lb','hb','lg','hg'};
-allpatsSt = struct;
-allpatsPc = struct;
+allpatspval = struct;
+allpatsPerCmd = struct;
 for bandI = 1:7
     for si = 1:length(channSal)
 
-        [allpatsSt.(bandNs{bandI}){si} , allpatsPc.(bandNs{bandI}){si}] =...
+        [allpatspval.(bandNs{bandI}){si} , allpatsPerCmd.(bandNs{bandI}){si}] =...
             seegLA_beh_AVEpowerBASE_allPats(behDIRs{si} ,...
             ephysDIRs{si}, bandI , epoch1, epoch2, wireSS(si), channSal{si});
 
@@ -130,16 +148,16 @@ end
 for banddi = 1:7
     for plotSi = 1:5
 
-        e1point = allpatsPc.(bandNs{banddi}){plotSi}.E1;
-        e2point = allpatsPc.(bandNs{banddi}){plotSi}.E2;
+        e1point = allpatsPerCmd.(bandNs{banddi}){plotSi}.E1;
+        e2point = allpatsPerCmd.(bandNs{banddi}){plotSi}.E2;
         hold on
-        if allpatsSt.(bandNs{banddi}){plotSi}.E1 < 0.5
+        if allpatspval.(bandNs{banddi}){plotSi}.E1 < 0.5
             scatter(banddi - 0.2, e1point , 50,[0 0.4470 0.7410],'filled')
         else
             scatter(banddi - 0.2, e1point , 50,[0 0.4470 0.7410])
         end
 
-        if allpatsSt.(bandNs{banddi}){plotSi}.E2 < 0.5
+        if allpatspval.(bandNs{banddi}){plotSi}.E2 < 0.5
             scatter(banddi + 0.2, e2point , 50,[0.8500 0.3250 0.0980],'filled')
         else
             scatter(banddi + 0.2, e2point , 50,[0.8500 0.3250 0.0980])
@@ -187,20 +205,20 @@ curname = getenv('COMPUTERNAME');
 switch curname
     case 'DESKTOP-FAGRV5G' % home pc
 
-        behDIR = 'D:\LossAversion\Patient folders\CLASE007\Behavioral-data';
-        ephysDIR = 'D:\LossAversion\Patient folders\CLASE007\NeuroPhys_Processed';
+        behDIR = 'D:\LossAversion\Patient folders\CLASE008\Behavioral-data';
+        ephysDIR = 'D:\LossAversion\Patient folders\CLASE008\NeuroPhys_Processed';
 
     case 'DESKTOP-I5CPDO7' % work pc
 
-        behDIR = 'E:\LossAversionPipeTest\CLASE007\Behavioral-data';
-        ephysDIR = 'E:\LossAversionPipeTest\CLASE007\NeuroPhys_Processed';
+        behDIR = 'E:\LossAversionPipeTest\CLASE008\Behavioral-data';
+        ephysDIR = 'E:\LossAversionPipeTest\CLASE008\NeuroPhys_Processed';
 
 end
 
 
 
-wire = 7;
-channS = 67:72;
+wire = 11;  %class7 = 7
+channS = 120:125; %class7 = 67:72
 bandblk = [1 4];
 % HARD coded to low beta and pre trial 0.5s to end of evaluation
 bS = [1 , 4 , 8 , 13 , 22 , 31 , 50];

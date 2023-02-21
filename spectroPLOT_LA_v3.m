@@ -89,7 +89,7 @@ for li = 1:length(lfpListTrial)
         case 1
             start2endE = specTimeT < timeONinsecs(3); % 3 for eval
         case 2
-            start2endE = specTimeT > timeONinsecs(5) & specTimeT < timeONinsecs(5) + 0.75; % 3 for eval
+            start2endE = specTimeT > timeONinsecs(5) & specTimeT < timeONinsecs(5) + 1; % 3 for eval
     end
 
     baseLINE = specTimeT < timeONinsecs(2);   % 2 for eval
@@ -221,7 +221,11 @@ switch epochBlk
 
         [~,pointfive] = min(abs(time2plott - 0.5));
 
-        xtick2use = [1 , point2five, pointfive ,length(time2plott)];
+        [~,point7five] = min(abs(time2plott - 0.75));
+
+        [~,pointone] = min(abs(time2plott - 1));
+
+        xtick2use = [1 , point2five, pointfive , point7five , pointone];
 
         baseLINEmean = mean(tmpChannelBase,2);
         tvals = nan(1,width(tmpChannFixSM));
@@ -239,7 +243,7 @@ switch epochBlk
         figure;
         imagesc(tmpChannFixSM)
         xticks(xtick2use)
-        xticklabels([0 0.25 0.5 0.75])
+        xticklabels([0 0.25 0.5 0.75 1])
         colorbar
         axis square
         figure;
@@ -362,7 +366,7 @@ switch epochblk
         start2endE = tempSpec < timeONinsecs(3);
 
     case 2
-        start2endE = tempSpec > timeONinsecs(5) & tempSpec < timeONinsecs(5) + 0.75;
+        start2endE = tempSpec > timeONinsecs(5) & tempSpec < timeONinsecs(5) + 1;
 
 end
 
