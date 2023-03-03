@@ -205,8 +205,8 @@ curname = getenv('COMPUTERNAME');
 switch curname
     case 'DESKTOP-FAGRV5G' % home pc
 
-        behDIR = 'D:\LossAversion\Patient folders\CLASE008\Behavioral-data';
-        ephysDIR = 'D:\LossAversion\Patient folders\CLASE008\NeuroPhys_Processed';
+        behDIR = 'D:\LossAversion\Patientfolders\CLASE008\Behavioral-data';
+        ephysDIR = 'D:\LossAversion\Patientfolders\CLASE008\NeuroPhys_Processed';
 
     case 'DESKTOP-I5CPDO7' % work pc
 

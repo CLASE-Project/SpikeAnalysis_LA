@@ -240,8 +240,12 @@ switch epochBlk
 
         end
 
+        % Try to clean up heatplot
+        tmpChannFixSMfix = tmpChannFixSM;
+        tmpChannFixSMfix(tmpChannFixSM > 5) = mean(tmpChannFixSM,'all');
+
         figure;
-        imagesc(tmpChannFixSM)
+        imagesc(tmpChannFixSMfix)
         xticks(xtick2use)
         xticklabels([0 0.25 0.5 0.75 1])
         colorbar
