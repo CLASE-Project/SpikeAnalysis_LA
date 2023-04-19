@@ -45,6 +45,7 @@ nWavesLocs = nWavesLocs(nWavesLocs > sampLen);
 if pnFlag == 1
     allWaves = posWaves;
     allLocs = pWavesLocs;
+    allPositions = posWpost;
     expData.posWaveInfo.waves = posWaves;
     expData.posWaveInfo.positions = posWpost;
     expData.posWaveInfo.numWaves = size(posWaves,2);
@@ -52,6 +53,7 @@ if pnFlag == 1
 else
     allWaves = negWaves;
     allLocs = nWavesLocs;
+    allPositions = negWpost;
     expData.negWaveInfo.waves = negWaves;
     expData.negWaveInfo.positions = negWpost;
     expData.negWaveInfo.numWaves = size(negWaves,2);
@@ -62,6 +64,7 @@ expData.waveAnylsInfo.spkThresh = spkThresh;
 expData.waveAnylsInfo.noiseThresh = noisThresh;
 
 expData.allWaves.waves = allWaves;
+expData.allWaves.positions = allPositions;
 expData.allWavesInfo.numWaves = size(allWaves,2);
 expData.allWavesInfo.alllocs = allLocs;
 
