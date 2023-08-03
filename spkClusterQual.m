@@ -125,13 +125,13 @@ while clustREFINE
             badCltPts = find(idxF == bciId);
             
             reaSSign = zeros(length(badCltPts),3);
-            for reAs = 1:numel(badCltPts);
+            for reAs = 1:numel(badCltPts)
                 
                 tempPoint = normalX(badCltPts(reAs),:);
                 reaSSign(reAs,1) = idxF(badCltPts(reAs));
                 
                 cenDists = zeros(length(goodCenID),1);
-                for cens = 1:size(goodCens,1);
+                for cens = 1:size(goodCens,1)
                     
                     compDist = [goodCens(cens,:); tempPoint];
                     
@@ -153,7 +153,7 @@ while clustREFINE
         end
         
         % Reassign cluster values
-        for nci = 1:length(fieldnames(badClustInfo));
+        for nci = 1:length(fieldnames(badClustInfo))
             
             bdID = badClustInd(nci);
             ptInd = badClustInfo.(strcat('bdC_', num2str(bdID))).bdPts;
@@ -210,7 +210,7 @@ while clustREFINE
                 % Fix idxf
                 presNums = unique(idxF);
                 newNumsC = 1:1:length(presNums);
-                for ppi = 1:length(presNums);
+                for ppi = 1:length(presNums)
                     
                     changeIND = idxF == presNums(ppi);
                     idxF(changeIND) = newNumsC(ppi);
