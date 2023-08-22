@@ -1,4 +1,4 @@
-%% CLASE 001
+%% CLASE 001 --- complete
 
 subID = 'clase001';
 nwbDi = 'D:\LossAversion\Patient folders\CLASE001\NWB-data\NWB_Data';
@@ -8,7 +8,7 @@ ttlS = 1;
 
 processLA_behav_v3( subID , ttlS ,'NA' , nwbDi, nwbN , behD)
 
-%% CLASE 006
+%% CLASE 006 --- complete
 
 subID = 'clase006';
 nwbDi = 'D:\LossAversion\Patient folders\CLASE006\NWB-data\NWB_Data';
@@ -21,7 +21,7 @@ ttlS = 1;
 processLA_behav_v3( subID , ttlS,'NA'  , nwbDi, nwbN , behD)
 
 
-%% CLASE 007
+%% CLASE 007 --- complete
 
 subID = 'clase007';
 nwbDi = 'D:\LossAversion\Patient folders\CLASE007\NWB-data\NWB_Data';
@@ -35,7 +35,7 @@ ttlS = 1;
 processLA_behav_v3( subID , ttlS ,ttlID , nwbDi, nwbN , behD)
 
 
-%% CLASE 008
+%% CLASE 008 --- complete
 
 subID = 'clase008';
 nwbDi = 'D:\LossAversion\Patient folders\CLASE008\NWB-data\NWB_Data';
@@ -46,7 +46,7 @@ ttlS = 1;
 
 processLA_behav_v3( subID , ttlS ,ttlID , nwbDi, nwbN , behD)
 
-%% CLASE 009
+%% CLASE 009 --- complete
 
 subID = 'clase009';
 nwbDi = 'D:\LossAversion\Patient folders\CLASE009\NWB-data\NWB_Data';
@@ -57,7 +57,7 @@ ttlS = 1;
 
 processLA_behav_v3( subID , ttlS ,ttlID , nwbDi, nwbN , behD)
 
-%% CLASE 018
+%% CLASE 018 --- complete
 
 subID = 'clase018';
 nwbDi = 'D:\LossAversion\Patient folders\CLASE018\NWB-processing\NWB_Data';
@@ -68,7 +68,7 @@ ttlS = 1;
 
 processLA_behav_v3( subID , ttlS ,ttlID , nwbDi, nwbN , behD)
 
-%% CLASE 019
+%% CLASE 019 --- complete
 
 subID = 'clase019';
 nwbDi = 'D:\LossAversion\Patient folders\CLASE019\NWB-Data\NWB_Data';
@@ -78,6 +78,51 @@ ttlID = 'XXXXX';
 ttlS = 1;
 
 processLA_behav_v3( subID , ttlS ,ttlID , nwbDi, nwbN , behD)
+
+%% CLASE 020 --- complete
+
+subID = 'clase020';
+nwbDi = 'Z:\MW_JAT_Backup\LA_Manuscript_2023\LossAversion\Patient folders\CLASE020\NWBProcessing\NWB_Data';
+nwbN = 'CLASE020_Session_2_filter.nwb';
+behD = 'Z:\MW_JAT_Backup\LA_Manuscript_2023\LossAversion\Patient folders\CLASE020\Behavior\EventBehavior';
+ttlID = 'XXXXX';
+ttlS = 1;
+
+processLA_behav_v3( subID , ttlS ,ttlID , nwbDi, nwbN , behD)
+
+%% CLASE 021 --- complete
+
+subID = 'clase021';
+nwbDi = 'Z:\MW_JAT_Backup\LA_Manuscript_2023\LossAversion\Patient folders\CLASE021\NWBProcessing\NWB_Data';
+nwbN = 'CLASE021_Session_1_filter.nwb';
+behD = 'Z:\MW_JAT_Backup\LA_Manuscript_2023\LossAversion\Patient folders\CLASE021\Behavior\EventBehavior';
+ttlID = 'XXXXX';
+ttlS = 1;
+
+processLA_behav_v3( subID , ttlS ,ttlID , nwbDi, nwbN , behD)
+
+%% CLASE 022 -------------------ERROR
+
+subID = 'clase022';
+nwbDi = 'Z:\MW_JAT_Backup\LA_Manuscript_2023\LossAversion\Patient folders\CLASE022\NWBProcessing\NWB_Data';
+nwbN = 'CLASE022_Session_2_filter.nwb';
+behD = 'Z:\MW_JAT_Backup\LA_Manuscript_2023\LossAversion\Patient folders\CLASE022\Behavior\EventBehavior';
+ttlID = 'XXXXX';
+ttlS = 3;
+
+processLA_behav_v3( subID , ttlS ,ttlID , nwbDi, nwbN , behD)
+
+%% CLASE 023 --- complete
+
+subID = 'clase023';
+nwbDi = 'Z:\MW_JAT_Backup\LA_Manuscript_2023\LossAversion\Patient folders\CLASE023\NWBProcessing\NWB_Data';
+nwbN = 'MW23_CLASE23_Session_1_filter.nwb';
+behD = 'Z:\MW_JAT_Backup\LA_Manuscript_2023\LossAversion\Patient folders\CLASE023\Behavior\EventBehavior';
+ttlID = 'XXXXX';
+ttlS = 1;
+
+processLA_behav_v3( subID , ttlS ,ttlID , nwbDi, nwbN , behD)
+
 
 %% 001
 

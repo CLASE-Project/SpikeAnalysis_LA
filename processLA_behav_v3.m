@@ -218,6 +218,7 @@ finInds = str2double(finTab(:,1));
 
 % uniqueIDS = cellfun(@(x) str2double(x), finTab(:,1));
 tmpblockIND = repmat(transpose(1:5),135,1);
+
 if height(finTab) == 5 && all(cell2mat(finTab(:,2)) == 135)
 
     alltrials = [];
@@ -231,19 +232,23 @@ if height(finTab) == 5 && all(cell2mat(finTab(:,2)) == 135)
         decFhexIND = decFhex2 == finInds(bbi);
         tmpTS2use = newEvtTS(decFhexIND);
 
-%         tmpTS2use = eventTS(eventS{bbi});
+        %         tmpTS2use = eventTS(eventS{bbi});
         newEvts2use(tmpblockIND == bbi) = tmpTS2use;
         trialepNumi = repmat(transpose(1:5),27,1);
         alltrialsi = transpose(1:tmpBlck);
         trialepIDi = repmat(transpose({'choiceShow','respWindowS','respWindowE','outDispS',...
             'outDispE'}),27,1);
+
+        blockTi = repmat(bbi,tmpBlck,1);
+        alltrials = [alltrials ; alltrialsi];
+        trialepID = [trialepID ; trialepIDi];
+        trialepNum = [trialepNum ; trialepNumi];
+        allblocks = [allblocks ; blockTi];
+
+
     end
-    blockTi = repmat(bbi,tmpBlck,1);
-    alltrials = [alltrials ; alltrialsi];
-    trialepID = [trialepID ; trialepIDi];
-    trialepNum = [trialepNum ; trialepNumi];
-    allblocks = [allblocks ; blockTi];
-%     newEvts2use = [newEvts2use ; tmpTS2use];
+
+    %     newEvts2use = [newEvts2use ; tmpTS2use];
 
 end
 
