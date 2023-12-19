@@ -64,22 +64,30 @@
 % load csv
 csvLOC = 'X:\MW_JAT_Backup\LA_Manuscript_2023\LossAversion';
 cd(csvLOC)
-patCSVtab = readtable('la_patientLocs.xlsx');
+
+
+patCSVtab = readtable('LA_dataLocations.xlsx');
+patCSVbrainLoc = readtable('LA_brainLocations.xlsx');
+
 curDIR = 'X:\MW_JAT_Backup\LA_Manuscript_2023';
 
 for pi = 1:5
 
-    tmpRow = patCSVtab(pi,:);
+    tmpRowSubLoc = patCSVtab(pi,:);
+    subI = tmpRowSubLoc.id{1};
+    NWBdir = [curDIR,tmpRowSubLoc.nwbloc{1}];
+    BEHdir = [curDIR,tmpRowSubLoc.behloc{1}];
+    NWBname = tmpRowSubLoc.nwbfile{1};
+    saveLOC = [curDIR,tmpRowSubLoc.saveLOC{1}];
 
-    bArea = tmpRow.brainRegion{1};
+    tmpSubBrains = patCSVbrainLoc(matches(patCSVbrainLoc.id,subI),:);
 
-    subI = tmpRow.id{1};
-    NWBdir = [curDIR,tmpRow.nwbloc{1}];
-    BEHdir = [curDIR,tmpRow.behloc{1}];
-    NWBname = tmpRow.nwbfile{1};
-    saveLOC = [curDIR,tmpRow.saveLOC{1}];
+    bAreaSS = tmpSubBrains.macLOCs;
+    bAreaHe = tmpSubBrains.hemiS;
+    chanKeep1 = tmpSubBrains.startChan;
+    chanKeep2 = tmpSubBrains.stopChan;
 
-    processLA_LFP_BP_PSH(bArea, subI , NWBdir, BEHdir, NWBname,"NA",saveLOC)
+    processLA_LFP_BP_PSH_v2(bArea, subI , NWBdir, BEHdir, NWBname,"NA",saveLOC)
 
 end
 

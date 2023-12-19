@@ -1,4 +1,5 @@
-function [] = processLA_LFP_BP_PSH(bArea ,subjID, NWBdir, BEHdir, NWBname,channels, saveDIR)
+function [] = processLA_LFP_BP_PSH(bArea ,subjID, NWBdir, BEHdir,...
+    NWBname,channels, saveDIR)
 
 arguments
 
@@ -10,7 +11,7 @@ arguments
     NWBdir (1,1) string = "NA"
     BEHdir (1,1) string = "NA"
     NWBname (1,1) string = "NA"
-    channels (1,:) double = []
+    startchannels (1,:) double = []
     saveDIR (1,1) string = "NA"
 
 end
@@ -65,34 +66,23 @@ ma_neuro = tmpNWB_LA.processing.get('ecephys').nwbdatainterface.get...
 wireID = tmpNWB_LA.general_extracellular_ephys_electrodes.vectordata.get('wireID').data.load();
 
 % channel ID
-chanLabels = cellstr(tmp_LA.general_extracellular_ephys_electrodes.vectordata.get('label').data.load()); %use MA only!
+chanLabels = cellstr(tmpNWB_LA.general_extracellular_ephys_electrodes.vectordata.get('label').data.load()); %use MA only!
 MAchan = find(contains(chanLabels,'MA_'));
-chanID = cellstr(tmp_LA.general_extracellular_ephys_electrodes.vectordata.get('location').data.load());
-hemisphere = cellstr(tmp_LA.general_extracellular_ephys_electrodes.vectordata.get('hemisph').data.load());
-shortBnames = cellstr(tmp_LA.general_extracellular_ephys_electrodes.vectordata.get('shortBAn').data.load());
+chanID = cellstr(tmpNWB_LA.general_extracellular_ephys_electrodes.vectordata.get('location').data.load());
+hemisphere = cellstr(tmpNWB_LA.general_extracellular_ephys_electrodes.vectordata.get('hemisph').data.load());
+shortBnames = cellstr(tmpNWB_LA.general_extracellular_ephys_electrodes.vectordata.get('shortBAn').data.load());
 %%% INDEX and add to VAR
-var.chanID = chanID(MAchan);
-var.chanHemi = hemisphere(MAchan);
-var.chanSname = shortBnames(MAchan);
+chanID_ME = chanID(MAchan);
+chanHemi_ME = hemisphere(MAchan);
+chanSname_ME = shortBnames(MAchan);
 
 
-
-
-
-
-% Brain area
-brainRG = cellstr(tmpNWB_LA.general_extracellular_ephys_electrodes.vectordata.get('location').data.load());
-% Hemisphere
-hemiSph = cellstr(tmpNWB_LA.general_extracellular_ephys_electrodes.vectordata.get('hemisph').data.load());
 % Channel ID
 channID = tmpNWB_LA.general_extracellular_ephys_electrodes.vectordata.get('channID').data.load();
-
+channID_ME = channID(MAchan);
 % Select only macrowires
-microWireID = ~(channID > 200);
-wireID = wireID(microWireID);
-brainRG = brainRG(microWireID);
-hemiSph = hemiSph(microWireID);
-channID = channID(microWireID);
+wireID = wireID(MAchan);
+
 
 % behavioral timestamps data are in microseconds
 % eventStamps = tmpNWB_LA.acquisition.get('events').timestamps.load;
@@ -129,18 +119,26 @@ load(behTabName, 'eventTABLE');
 %hemisphere, and contact number (based on which contacts are localized to
 %the structure of interest with respect to VOLBRAIN or FREESURFER)
 
-brArIND = matches(brainRG , bArea);
+brArIND = matches(chanID_ME , bArea);
 
 wireIDs = wireID(brArIND);
-hemiSph = hemiSph(brArIND);
-channU = channID(brArIND);
+chanHemi_ME = chanHemi_ME(brArIND);
+channU = channID_ME(brArIND);
 
 % recHeader.wireIDs = wireID(brArIND);
-infoTable = table(repmat(bArea,size(wireIDs)), wireIDs , hemiSph , channU , 'VariableNames',...
+infoTable = table(repmat(bArea,size(wireIDs)), wireIDs , chanHemi_ME , channU , 'VariableNames',...
     {'BrainROI','WireID','Hemi','Chanl'});
 
 % Ephys
 ephysData = ma_neuro(brArIND,:);
+
+
+% Mean Hz Band 
+% Median Hz Band 
+% AUC Hz Band 
+% STD Hz Band 
+% Max Power per Hz Band
+% Peak frequency of Max power per Hz Band
 
 % Loop through trials
 ave_maxPow = zeros(6,7,135,length(channU));

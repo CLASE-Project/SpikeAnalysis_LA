@@ -1,4 +1,5 @@
-function [] = processLA_LFP_BP_PSH(bArea ,subjID, NWBdir, BEHdir, NWBname,channels, saveDIR)
+function [] = processLA_LFP_BP_PSH_v2(bArea ,subjID, NWBdir, BEHdir,...
+    NWBname,startchannels,stopchannels, saveDIR)
 
 arguments
 
@@ -10,7 +11,8 @@ arguments
     NWBdir (1,1) string = "NA"
     BEHdir (1,1) string = "NA"
     NWBname (1,1) string = "NA"
-    channels (1,:) double = []
+    startchannels (1,:) double = []
+    stopchannels (1,:) double = []
     saveDIR (1,1) string = "NA"
 
 end
@@ -117,6 +119,21 @@ load(behTabName, 'eventTABLE');
 %## IMPORTANT - in the future this may be furthered constrained by
 %hemisphere, and contact number (based on which contacts are localized to
 %the structure of interest with respect to VOLBRAIN or FREESURFER)
+
+%%%% LOOP through
+% 1. Brain region
+% 2. Hemisphere
+% 3. Channels of interest
+% 4. Frequency bands 
+
+% Extract table and matrix
+
+% Use info to bi polar reference
+
+
+
+
+
 
 brArIND = matches(chanID_ME , bArea);
 
