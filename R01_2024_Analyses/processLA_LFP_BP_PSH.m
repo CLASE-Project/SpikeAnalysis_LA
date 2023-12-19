@@ -1,4 +1,4 @@
-function [] = processLA_LFP_BP(bArea ,subjID, NWBdir, BEHdir, NWBname,channels, saveDIR)
+function [] = processLA_LFP_BP_PSH(bArea ,subjID, NWBdir, BEHdir, NWBname,channels, saveDIR)
 
 arguments
 
