@@ -344,7 +344,7 @@ saveNAME1 = [char(subjID) , '_LFPprocessByTrial.mat'];
 % saveNAME3 = [char(subjID) , '_LFPprocessByTrial_CWT.mat'];
 
 
-crBRhnames = createBHnames(bArea, hemiSelc, subjID);
+crBRhnames = createBHnames(bArea, hemiSelc);
 bandFields = fieldnames(outDATA.byBand);
 analysisShNs = {'AVE','STD','MAX','MED','FREQ'};
 bandNAMES = {'D','T','A','LB','HB','LG','HG'};

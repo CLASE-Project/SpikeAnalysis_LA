@@ -77,6 +77,8 @@ switch curPCloc
 
 end
 
+
+
 %%%% ADD MORE LOCATIONS, LEFT and RIGTH, AND CORRECT CONTACTs
 % load csv
 csvLOC = mainLOC;
@@ -87,33 +89,28 @@ patCSVbrainLoc = readtable('LA_brainLocations.xlsx');
 
 nwbLOCstem = '\NWBProcessing\NWB_Data';
 behLOCstem = '\Behavior';
-svLOCstem = '\NeuroPhys-Processed\PSH_Summary';
-svLOCprcstem = '\NeuroPhys-Processed';
+svLOCstem = '\NeuroPhys_Processed\PSH_Summary';
+svLOCprcstem = '\NeuroPhys_Processed';
 
-for pii = 1:height(patCSVtab)
+for pi = 1:height(patCSVtab)
 
-
-    tmpRowSubLoc = patCSVtab(pii,:);
+    tmpRowSubLoc = patCSVtab(pi,:);
     subI = tmpRowSubLoc.id{1};
-    NWBdir = [patDIRlco,filesep,subI,nwbLOCstem];
-    BEHdir = [patDIRlco,filesep,subI,behLOCstem];
+    NWBdir = [curDIR,filesep,subI,nwbLOCstem];
+    BEHdir = [curDIR,filesep,subI,behLOCstem];
     NWBname = tmpRowSubLoc.nwbfile{1};
-    saveLOC = [patDIRlco,filesep,subI,svLOCstem];
+    saveLOC = [curDIR,filesep,subI,svLOCstem];
 
     tmpSubBrains = patCSVbrainLoc(matches(patCSVbrainLoc.id,subI),:);
 
-    tmpSubbCheck = tmpSubBrains.macLOCs{1};
-    if matches(tmpSubbCheck,'nan')
-        continue
-    end
+    tmpSubbCheck = tmpSubBrains.macLOCs{1}
 
     bAreaSS = tmpSubBrains.macLOCs;
     bAreaHe = tmpSubBrains.hemiS;
     startchannels = tmpSubBrains.startChan;
     stopchannels = tmpSubBrains.stopChan;
 
-    processLA_LFP_BP_PSH_v2(bAreaSS, subI , bAreaHe ,...
-        NWBdir, BEHdir, NWBname,...
+    processLA_LFP_BP_PSH_v2(bAreaSS, subI , NWBdir, BEHdir, NWBname,...
         startchannels,stopchannels,saveLOC)
 
 end
