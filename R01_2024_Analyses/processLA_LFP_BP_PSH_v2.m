@@ -267,6 +267,8 @@ for bi = 1:135
                 Leakage = 0.85,...
                 OverlapPercent = 95);
 
+            S2 = pow2db(S);
+
             % [cfs,frq] = cwt(double(ecogTrialInd),500);
             % abCFS = abs(cfs);
             % timeCFS = (0:numel(double(ecogTrialInd))-1)/500;
@@ -289,7 +291,7 @@ for bi = 1:135
             timeBins = timeIndsRel(:,bi);
 
             [tp_ave_pow , tmp_med_pow , tp_std_pow , tp_max_pow, ...
-                tp_freq_atMP] = getFreqBinData(S,F,T,timeBins);
+                tp_freq_atMP] = getFreqBinData(S2,F,T,timeBins);
 
             ave_maxPow(:,:,bi,brai) = tp_ave_pow;
             med_maxPow(:,:,bi,brai) = tmp_med_pow;
