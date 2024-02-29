@@ -1,0 +1,24 @@
+%% Processing steps
+
+% 1. Raw CSC
+% 2. Convert to MED
+% 3. Convert to NWB
+
+%% Use CSC2MED
+
+% in command window
+% .\CSC2MED 'C:\Users\Admin\CLASE_001\Event_Data' 'C:\NewLoc\CLASE_001\MED
+
+%% READ MED
+
+% C:\Users\Admin\DHN\read_MED
+
+%%
+
+tmpDIR = dir();
+tmpDIR2 = {tmpDIR.name};
+tmpDIR3 = tmpDIR2(~ismember(tmpDIR2,{'.','..'}));
+tmpDIR4 = tmpDIR3(contains(tmpDIR3),'.ticd')
+
+session = read_MED('C:\Users\Admin\Downloads\LA_CLASE_01_MED\Event_Data.medd',...
+    [],[],[],[],'L1_password')
