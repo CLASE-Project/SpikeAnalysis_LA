@@ -15,6 +15,11 @@
 cd('C:\Users\Admin\DHN\')
 
 %%
+
+
+
+%%
+% meddLOC = 'C:\Users\Admin\Downloads\LA_CLASE_06\Event_Data.medd\';
 meddLOC = 'C:\Users\Admin\Downloads\LA_CLASE_01_MED\Event_Data.medd\';
 cd(meddLOC)
 
@@ -24,10 +29,34 @@ tmpDIR3 = tmpDIR2(~ismember(tmpDIR2,{'.','..'}));
 tmpDIR4 = tmpDIR3(contains(tmpDIR3,'.ticd'));
 
 tmpDIR5 = cellfun(@(x) [meddLOC , x], tmpDIR4,'UniformOutput',false);
+% saveDIR = ['C:\Users\Admin\Downloads\LA_CLASE_06\MatMedd'];
+saveDIR = 'C:\Users\Admin\Downloads\LA_CLASE_01_MED\MatMedd';
+
+% cd to saveDIR and determine how many are present
+cd(saveDIR)
+matDIR1 = dir("*.mat");
+matDIR2 = {matDIR1.name};
+matCSC = extractBetween(matDIR2,9,16);
+tcdCSC = extractBetween(tmpDIR5,58,65);
+tmpDIR5 = tmpDIR5(~ismember(tcdCSC,matCSC));
+
+for i = 1:length(tmpDIR5)
+    cd(meddLOC)
+    disp(i)
+    disp(tmpDIR5{i})
+    allparts = split(tmpDIR5{i},{'\','.'});
+    chanPart = allparts{8};
+    session = read_MED(tmpDIR5{i},[], [], [], [],'L1_password');
+    cd(saveDIR)
+    save(['Session_',chanPart,'.mat'],'session','-v7.3')
+    pause(0.01)
+end
 
 
-%%
-% session = read_MED(tmpDIR5{1})
+%% 
+
+
+
 
 %% FROM NWB - PROCESS TTLS for LA
 
